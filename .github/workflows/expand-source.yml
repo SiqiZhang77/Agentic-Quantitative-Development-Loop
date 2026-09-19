@@ -1,0 +1,23 @@
+name: Expand dissertation source
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    if: github.actor == 'SiqiZhang77'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expand and verify all frozen source files
+        run: |
+          python3 expand_project.py
+          python3 code/tools/verify_and_extract.py
+          python3 code/analysis/reproduce_summaries.py --output /tmp/reproduced.json
+      - name: Commit the expanded project
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git add -A
+          git commit -m "Expand complete dissertation source and remove ZIP archives"
+          git push origin HEAD:main
