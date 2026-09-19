@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/exp3/manager_final_v1.schema.json",
+  "title": "Experiment 3 Manager Final Handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "producer",
+    "decision",
+    "failure_phase",
+    "summary",
+    "acceptance_mapping"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "manager_final_v1"
+    },
+    "producer": {
+      "type": "string",
+      "const": "manager"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "failed"
+      ]
+    },
+    "failure_phase": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance_mapping": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requirement_id",
+          "requirement",
+          "status",
+          "evidence"
+        ],
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          },
+          "requirement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "not_verified"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "accepted"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_phase": {
+            "type": "null"
+          },
+          "acceptance_mapping": {
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "passed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_phase": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

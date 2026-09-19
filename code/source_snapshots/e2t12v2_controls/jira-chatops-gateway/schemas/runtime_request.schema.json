@@ -1,0 +1,902 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/runtime_request.schema.json",
+  "title": "RAE Runtime Request Payload",
+  "description": "Versioned runtime contract injected by Team IW into the isolated RAE execution container for a single grouped Jira ticket run. The final output remains output_paths.result_path. Progress reporting is an optional mounted JSONL side-channel controlled by IW via output_paths.progress_events_path. Optional HDFS transfer settings describe the weles-to-amok-to-HDFS workflow. The final response should be written atomically to output_paths.result_path, and the same structured final response object should be printed as the final stdout line for Airflow XCom. Progress events must remain separate and must not be written to stdout. RAE-17 adds the optional execution_objectives.target_criteria block: success thresholds the result-evaluation step scores the run's performance_metrics against, surfaced back in the response as evaluation and recommended_action. Optional input_datasets records describe read-only files materialised from approved HDFS roots or selected Jira attachments into the sandbox input mount.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "jira_metadata",
+    "execution_objectives",
+    "iteration_controls",
+    "output_paths"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this container run."
+    },
+    "architecture_mode": {
+      "type": "string",
+      "enum": [
+        "single_agent",
+        "manager_star"
+      ],
+      "default": "single_agent",
+      "description": "Optional execution architecture selector. Omission preserves the existing single-agent workflow."
+    },
+    "repository_details": {
+      "description": "Optional repository scope block. Gateway requests default this to bankingscience/BSLAgenticQuantDevLoop; code-free execution requires execution_objectives.zero_code_modifications/read_only.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "alias": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]+$",
+                "description": "Canonical catalog name for this repository."
+              },
+              "repo_full_name": {
+                "type": "string",
+                "pattern": "^bankingscience/[A-Za-z0-9_.-]+$",
+                "description": "Canonical GitHub owner/repository name."
+              },
+              "clone_url": {
+                "type": "string",
+                "pattern": "^https://github\\.com/bankingscience/[A-Za-z0-9_.-]+(\\.git)?$",
+                "description": "Optional GitHub clone URL. Must be under the approved bankingscience GitHub organisation."
+              },
+              "source_branch": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+$",
+                "maxLength": 200,
+                "description": "Base/source branch requested for this repository."
+              },
+              "target_branch": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+$",
+                "maxLength": 200,
+                "description": "Optional target branch or ref. If omitted, RAE may derive a branch from the Jira ticket ID."
+              },
+              "runtime_role": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]+$",
+                "description": "Intended role of this repository in the workflow."
+              },
+              "allowed_directories": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                },
+                "uniqueItems": true,
+                "description": "Optional per-run scope of relative directories that the container may inspect or modify. This does not grant or restrict a Jira user's repository access; repository access is controlled by the user access matrix."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "jira_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Structured grouped Jira ticket context. This replaces passing only a single raw comment string.",
+      "required": [
+        "ticket_id",
+        "current_status",
+        "summary",
+        "description",
+        "triggering_comment",
+        "events_history"
+      ],
+      "properties": {
+        "ticket_id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$",
+          "description": "Jira ticket key, for example SCRUM-46."
+        },
+        "current_status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 12000
+        },
+        "triggering_comment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comment_id",
+            "timestamp",
+            "author",
+            "text"
+          ],
+          "properties": {
+            "comment_id": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "author": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 4000
+            }
+          }
+        },
+        "events_history": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "Chronological grouped comments or status changes that triggered this run.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "event_type",
+              "timestamp",
+              "text"
+            ],
+            "properties": {
+              "event_type": {
+                "type": "string",
+                "enum": [
+                  "comment",
+                  "status_change",
+                  "description_update",
+                  "attachment",
+                  "other"
+                ]
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "RFC3339 timestamp. Team IW must normalize raw Jira timestamps before sending the request, for example converting 2026-06-11T10:00:00.000+0000 to 2026-06-11T10:00:00.000+00:00."
+              },
+              "author": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 4000
+              }
+            }
+          }
+        }
+      }
+    },
+    "retrieval_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional audit-ready evidence returned by the approved frozen Jira-memory retriever. Omit for C0/no-retrieval runs. C1 includes this object even when the deterministic retrieval returns no memories.",
+      "required": [
+        "enabled",
+        "status",
+        "query",
+        "query_sha256",
+        "retriever_name",
+        "retriever_version",
+        "corpus_id",
+        "corpus_sha256",
+        "index_id",
+        "index_sha256",
+        "exclusion_list_id",
+        "exclusion_list_sha256",
+        "cutoff_at",
+        "requested_top_k",
+        "max_memories_per_source_ticket",
+        "candidate_count",
+        "memories"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "const": true
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "empty"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000,
+          "description": "Sanitized canonical retrieval query. Treat as untrusted experiment evidence, not as a system instruction."
+        },
+        "query_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "retriever_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,100}$"
+        },
+        "retriever_version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,100}$"
+        },
+        "corpus_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+        },
+        "corpus_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "index_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+        },
+        "index_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "exclusion_list_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+        },
+        "exclusion_list_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "cutoff_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requested_top_k": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max_memories_per_source_ticket": {
+          "type": "integer",
+          "const": 2,
+          "description": "Deterministic diversity cap applied after scoring and before top-k prompt injection."
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "memories": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "memory_id",
+              "source_ticket_id",
+              "source_type",
+              "source_id",
+              "source_timestamp",
+              "rank",
+              "score",
+              "text"
+            ],
+            "properties": {
+              "memory_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+              },
+              "source_ticket_id": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$"
+              },
+              "source_type": {
+                "type": "string",
+                "enum": [
+                  "summary",
+                  "description",
+                  "comment",
+                  "status_change",
+                  "description_update",
+                  "bot_result",
+                  "error_summary",
+                  "result_summary",
+                  "attachment_metadata",
+                  "other"
+                ]
+              },
+              "source_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+              },
+              "source_timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "rank": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "score": {
+                "type": "number",
+                "minimum": 0
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ok"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "memories": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "memories": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "execution_objectives": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Instructions passed into the local Swarm agent loop.",
+      "required": [
+        "strategy_type",
+        "target_date_range"
+      ],
+      "properties": {
+        "strategy_type": {
+          "type": "string",
+          "enum": [
+            "backtest",
+            "ingestion",
+            "refactor",
+            "analysis",
+            "other"
+          ]
+        },
+        "stock_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Ticker, stock universe, or asset identifier if relevant to the task."
+        },
+        "target_date_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "start_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "end_date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "parsed_task_parameters": {
+          "type": "object",
+          "description": "Structured parameters parsed by Team IW from the Jira command.",
+          "properties": {
+            "rag_enabled": {
+              "type": "boolean"
+            },
+            "rag_top_k": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "provider_mode": {
+              "type": "string",
+              "enum": ["company_litellm", "openai"]
+            },
+            "provider_base_url": {
+              "type": "string",
+              "format": "uri",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "provider_identity_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "additionalProperties": true
+        },
+        "system_instruction_override": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional dynamic instruction override for the agent persona or goal."
+        },
+        "resource_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$",
+          "description": "Optional relative path within the repository to the strategy, source file, config, or other resource the run should inspect or operate on."
+        },
+        "target_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$",
+          "description": "Optional repository-relative deliverable path. Defaults to resource_path when omitted, allowing a run to inspect one file while creating or updating another."
+        },
+        "zero_code_modifications": {
+          "type": "boolean",
+          "description": "True when the request should not modify or create code files, for example pure backtest mode. The final response should mirror this so generated_artifacts.modified_files and new_files can validate as empty."
+        },
+        "target_criteria": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "description": "RAE-17: optional success thresholds the result-evaluation step scores performance_metrics against. Omitted or null means no criteria were supplied, so the response's evaluation.met_criteria is null and recommended_action defaults to \"review\". Unrecognised keys are reported back in evaluation.unrecognised_criteria rather than silently ignored.",
+          "properties": {
+            "min_total_return": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "performance_metrics.total_return must be >= this value to pass."
+            },
+            "min_sharpe_ratio": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "performance_metrics.sharpe_ratio must be >= this value to pass."
+            },
+            "max_drawdown": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "Worst acceptable drawdown, e.g. -0.15 for -15%. performance_metrics.max_drawdown must be >= this floor (i.e. no worse) to pass."
+            },
+            "min_alpha": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "performance_metrics.alpha must be >= this value to pass."
+            },
+            "min_beta": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "performance_metrics.beta must be >= this value to pass."
+            },
+            "max_beta": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "performance_metrics.beta must be <= this value to pass."
+            }
+          }
+        }
+      }
+    },
+    "input_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional read-only files downloaded from Jira and mounted by the gateway.",
+      "properties": {
+        "request_template_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^/workspace/input/attachments/[A-Z][A-Z0-9]+-[0-9]+/[A-Za-z0-9][A-Za-z0-9._-]{0,254}\\.request$",
+          "description": "Read-only path to the selected Jira .request attachment. The gateway downloads and mounts this file before starting the sandbox."
+        }
+      }
+    },
+    "iteration_controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Strict safety and termination boundaries for the local agent loop.",
+      "required": [
+        "max_iterations",
+        "max_failed_iterations",
+        "timeout_seconds",
+        "max_token_budget_per_run"
+      ],
+      "properties": {
+        "allow_iteration": {
+          "type": "boolean",
+          "description": "Whether the runtime may run more than one edit/evaluate cycle. When false the runtime performs exactly one pass and returns its result whatever the evaluation recommends, regardless of max_iterations, and failure retries are disabled so a failed pass is returned rather than retried. When omitted the default depends on execution_objectives.strategy_type: backtest runs default to true, because the engine returns measured metrics that a further pass has a real signal to improve against; every other type defaults to false, because those runs are scored by an advisory prose review rather than a measurement."
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max_failed_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum failed edit/backtest cycles allowed before the runtime stops and returns the failure."
+        },
+        "max_agent_turns": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 10,
+          "maximum": 60,
+          "description": "Optional hard cap on tool/LLM turns within one edit pass. Omit to use the bounded task-complexity default."
+        },
+        "max_commits_per_run": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Optional cap on GitHub commits within one agent/edit pass. Omit to retain MAX_COMMITS_PER_RUN from the runtime environment, which defaults to 5. The counter resets for each pass, so an iterative workflow may create more commits in total."
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 10800
+        },
+        "max_token_budget_per_run": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 1000000
+        }
+      }
+    },
+    "resource_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional bounded compute allocation for this workflow. Omitted fields use the documented safe defaults. GPU allocation is currently unsupported and must remain zero.",
+      "properties": {
+        "cpu_vcpus": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 8,
+          "default": 2,
+          "description": "CPU limit applied to Docker. YARN rounds fractional values up to the next whole container vCore."
+        },
+        "memory_mb": {
+          "type": "integer",
+          "minimum": 512,
+          "maximum": 16384,
+          "default": 4096,
+          "description": "Memory limit in MiB applied to Docker and the YARN worker container."
+        },
+        "gpu_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 0,
+          "default": 0,
+          "description": "Reserved GPU count. The current Docker/YARN runtime does not support GPUs, so only zero is accepted."
+        },
+        "execution_timeout_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 10800,
+          "default": 2100,
+          "description": "Orchestrator timeout for the Docker process or YARN application."
+        },
+        "pids_limit": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 1024,
+          "default": 256,
+          "description": "Maximum number of processes available to the sandbox Docker container."
+        },
+        "yarn_queue": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "description": "Optional YARN queue override. When omitted, SANDBOX_YARN_QUEUE is used."
+        }
+      }
+    },
+    "input_datasets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "description": "Read-only external datasets staged by the orchestration layer under /workspace/input/datasets before the sandbox starts. Sources may be approved HDFS files or selected Jira issue attachments.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset_id",
+          "source_kind",
+          "original_filename",
+          "source_uri",
+          "container_path",
+          "format",
+          "read_only"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "hdfs",
+              "jira_attachment"
+            ]
+          },
+          "original_filename": {
+            "type": "string",
+            "pattern": "^(?!.*\\.\\.)(?!.*[/\\\\])[A-Za-z0-9._ -]+$",
+            "maxLength": 255
+          },
+          "source_uri": {
+            "type": "string",
+            "pattern": "^(?:hdfs://[^?#]+|jira-attachment://[0-9]+)$",
+            "description": "Original approved HDFS URI or selected Jira attachment identifier."
+          },
+          "run_staged_hdfs_uri": {
+            "type": "string",
+            "pattern": "^hdfs://[^?#]+$",
+            "description": "Run-isolated HDFS copy used by the YARN worker, populated during orchestration."
+          },
+          "container_path": {
+            "type": "string",
+            "pattern": "^/workspace/input/datasets/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "csv",
+              "json",
+              "xlsx",
+              "parquet"
+            ]
+          },
+          "read_only": {
+            "type": "boolean",
+            "const": true
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "jira_attachment_id": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Jira attachment id when source_kind is jira_attachment."
+          },
+          "jira_mime_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "jira_created": {
+            "type": "string",
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "output_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mounted filesystem paths and optional external publication settings used by RAE. result_path remains the canonical final response JSON. progress_events_path is an optional temporary JSONL side-channel. RAE should write the final response atomically to result_path and print the same JSON object as the final stdout line.",
+      "required": [
+        "result_path",
+        "artifact_dir"
+      ],
+      "properties": {
+        "result_path": {
+          "type": "string",
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+\\.json$",
+          "default": "/workspace/output/result.json",
+          "description": "Canonical final output JSON path. RAE should write the final response atomically here by writing to a temporary file first and then renaming or moving it into place. The same final response object should also be printed as the final stdout line for Airflow XCom. Progress events must not be written to stdout."
+        },
+        "artifact_dir": {
+          "type": "string",
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+$",
+          "default": "/workspace/output/artifacts",
+          "description": "Mounted output directory where generated artifacts, reports, plots, logs, and intermediate outputs should be stored."
+        },
+        "progress_events_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+\\.jsonl$",
+          "description": "Optional mounted JSONL side-channel for live progress events. If omitted or null, RAE must skip progress reporting. Do not write progress events to stdout. IW may set this to /workspace/output/progress_events.jsonl.",
+          "examples": [
+            "/workspace/output/progress_events.jsonl"
+          ]
+        },
+        "hdfs_transfer": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Optional HDFS transfer configuration for publishing the final forCluster directory. This models the weles simulation-results output copied to an amok landing directory, then uploaded to HDFS under /shared/model-logs. For parallel container runs, the final HDFS target should be scoped by ticket_id and/or run_id so different tickets or containers do not write into the same shared location.",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether this run should publish the final forCluster output to HDFS."
+            },
+            "source_login_node": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[A-Za-z0-9._-]+$",
+              "description": "Login node where simulation-results initially land, usually weles."
+            },
+            "compute_node": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[A-Za-z0-9._-]+$",
+              "description": "Compute node used for PySpark/HDFS commands, usually amok."
+            },
+            "weles_forcluster_path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/(?!.*\\.\\.)[A-Za-z0-9._~/-]+$",
+              "description": "Absolute path to the forCluster directory on weles after unzipping the backtest result and running runMe.sh. May be null if discovered during execution."
+            },
+            "amok_landing_dir": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^(~|/)(?!.*\\.\\.)[A-Za-z0-9._~/-]+$",
+              "description": "Landing directory on amok where the forCluster directory should be copied before HDFS upload."
+            },
+            "hdfs_target_dir": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/shared/model-logs/(?!.*\\.\\.)[A-Za-z0-9._/-]+$",
+              "description": "Target HDFS directory, for example /shared/model-logs/SCRUM-46/run-001 or /shared/model-logs/2026-06-20_WaW_EU/SCRUM-46_run-001. This path should be unique per ticket and/or run_id to avoid collisions between parallel containers."
+            },
+            "verify_after_upload": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether RAE should verify the upload using hdfs dfs -ls or an equivalent check."
+            },
+            "overwrite_policy": {
+              "type": "string",
+              "enum": [
+                "fail_if_exists"
+              ],
+              "default": "fail_if_exists",
+              "description": "RAE should not overwrite an existing HDFS output path. If the target path already exists, the upload should fail and return a diagnostic error rather than overwriting another container's output."
+            },
+            "path_scope": {
+              "type": "string",
+              "enum": [
+                "ticket_or_run_scoped"
+              ],
+              "default": "ticket_or_run_scoped",
+              "description": "HDFS output paths should be scoped by ticket_id and/or run_id so parallel containers cannot collide on the same final HDFS location."
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "source_login_node": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._-]+$"
+                  },
+                  "compute_node": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._-]+$"
+                  },
+                  "amok_landing_dir": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^(~|/)(?!.*\\.\\.)[A-Za-z0-9._~/-]+$"
+                  },
+                  "hdfs_target_dir": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^/shared/model-logs/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                  },
+                  "overwrite_policy": {
+                    "type": "string",
+                    "const": "fail_if_exists"
+                  },
+                  "path_scope": {
+                    "type": "string",
+                    "const": "ticket_or_run_scoped"
+                  }
+                },
+                "required": [
+                  "source_login_node",
+                  "compute_node",
+                  "amok_landing_dir",
+                  "hdfs_target_dir",
+                  "overwrite_policy",
+                  "path_scope"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

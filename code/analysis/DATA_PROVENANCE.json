@@ -1,0 +1,32 @@
+[
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-formal-results-v1/task_scores.csv",
+    "sha256": "bfb66372a5e252c91a955ca5d49d9dafc02ba9bc3095258936597e72cb4ad5e4",
+    "selection": "E4V3 only; 60 rows; selected non-path columns"
+  },
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-formal-results-v1/t3_item_results.csv",
+    "sha256": "643400014ab183509cd500293463bc881abde2d842ce0e3772b77c2956e23ff7",
+    "selection": "E4V3 only; 1500 run-item rows; no numeric answers or private scorer paths"
+  },
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-t3-level-resource-v1/results/tables/run_resources.csv",
+    "sha256": "b351e6d4bb7a5a38ccef8fcf4adae764b792e65285df7d56e62ff93343b07876",
+    "selection": "60 run-level aggregates; full provider-call ledger was used by the source analysis; raw prompts omitted"
+  },
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-t12-unblinded-analysis-v1/analysis_data.json",
+    "sha256": "fceda4f9e151dbda760e504437bd43ede2dc131ddcce0bcb7322a221d1eaf250",
+    "selection": "32 confirmed condition-joined records; anonymous join IDs and generated commit IDs omitted"
+  },
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-retrieval-diagnostics-v1/results/relevance_grades.csv",
+    "sha256": "2b41cbe8f5c1b04a1e5450bc363ee724bff3ac04d1e2639f369472af3ccda5f2",
+    "selection": "Published retrospective relevance labels/paraphrases and task-level diagnostics only; no raw company records"
+  },
+  {
+    "source_relative_path": "02_EXPERIMENT_CONTROL/status-and-logs/thesis-retrieval-diagnostics-v1/results/retrieval_metrics.csv",
+    "sha256": "99d726e6ff97b53d50193272d43194e3b2eea6419d1b52a312ba2dd5fec8470f",
+    "selection": "Published retrospective relevance labels/paraphrases and task-level diagnostics only; no raw company records"
+  }
+]

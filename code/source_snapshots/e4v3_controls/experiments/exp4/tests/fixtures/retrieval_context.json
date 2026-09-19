@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "status": "ok",
+  "query": "public offline E4 test query",
+  "query_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "retriever_name": "offline_fixture",
+  "retriever_version": "v1",
+  "corpus_id": "public-test-corpus",
+  "corpus_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "index_id": "public-test-index",
+  "index_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "exclusion_list_id": "public-test-exclusions",
+  "exclusion_list_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "cutoff_at": "2026-09-01T00:00:00+00:00",
+  "requested_top_k": 5,
+  "max_memories_per_source_ticket": 2,
+  "candidate_count": 1,
+  "memories": [
+    {
+      "memory_id": "PUBLIC-OFFLINE-TEST-01",
+      "source_ticket_id": "TEST-1",
+      "source_type": "summary",
+      "source_id": "summary-1",
+      "source_timestamp": "2026-08-01T00:00:00+00:00",
+      "rank": 1,
+      "score": 1.0,
+      "text": "Public synthetic memory used only by offline E4 control tests."
+    }
+  ]
+}

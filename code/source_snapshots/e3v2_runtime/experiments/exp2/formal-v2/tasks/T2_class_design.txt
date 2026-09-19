@@ -1,0 +1,8 @@
+Add a small clock abstraction to rae_runtime/proxy/budget_guard.py while preserving every existing budget and usage behaviour.
+Define an abstract MonotonicClock interface with a typed now() -> float method.
+Define a concrete SystemMonotonicClock that is instantiable without arguments, explicitly overrides now(), and delegates to time.monotonic().
+Add an optional keyword-only clock dependency to BudgetGuard.__init__; the default must use SystemMonotonicClock, while a supplied MonotonicClock is used for the start time and every later timeout check.
+Preserve the existing strict greater-than timeout boundary, token-budget and iteration limits, usage and cost accounting, exception classes, and existing constructor calls.
+Add useful Python documentation and types for the public clock classes and methods, and add focused deterministic tests in rae_runtime/sandbox/tests/test_idempotency.py using a controllable fake clock.
+Do not add wall-clock sleeps, duplicate budget logic, modify RAG or deployment behaviour, or change backtest, HDFS, YARN, schema, or strategy-request logic.
+Modify only rae_runtime/proxy/budget_guard.py and rae_runtime/sandbox/tests/test_idempotency.py.

@@ -1,0 +1,61 @@
+{
+  "blinding": {
+    "salt_sha256": "UNRESOLVED"
+  },
+  "control": {
+    "commit_sha": "UNRESOLVED",
+    "ref": "UNRESOLVED",
+    "tree": "UNRESOLVED"
+  },
+  "image": {
+    "digest": "UNRESOLVED"
+  },
+  "private_evaluator": {
+    "manifest_path": "UNRESOLVED",
+    "manifest_sha256": "UNRESOLVED",
+    "primary_scorer_commitment_sha256": "UNRESOLVED",
+    "private_evaluator_coordinator_sha256": "UNRESOLVED",
+    "private_t3_item_scorer_sha256": "UNRESOLVED",
+    "schema_version": "UNRESOLVED"
+  },
+  "public_task": {
+    "relative_root": "experiments/shared/t3-quant-suite-v2",
+    "scorer_result_schema_path": "experiments/shared/t3-quant-suite-v2/scorer_result_schema_v2.json",
+    "scorer_result_schema_sha256": "UNRESOLVED",
+    "scorer_result_validator_path": "experiments/shared/t3-quant-suite-v2/scorer_result_validator.py",
+    "scorer_result_validator_sha256": "UNRESOLVED"
+  },
+  "rag": {
+    "corpus_id": "UNRESOLVED",
+    "corpus_manifest_path": "UNRESOLVED",
+    "corpus_manifest_sha256": "UNRESOLVED",
+    "corpus_sha256": "UNRESOLVED",
+    "cutoff_at": "UNRESOLVED",
+    "exclusion_list_id": "UNRESOLVED",
+    "exclusion_list_sha256": "UNRESOLVED",
+    "index_id": "UNRESOLVED",
+    "index_path": "UNRESOLVED",
+    "index_sha256": "UNRESOLVED",
+    "retrieval_context_path": "UNRESOLVED",
+    "retrieval_context_sha256": "UNRESOLVED",
+    "top_k": 5
+  },
+  "schema_version": "exp2-terra-t3-rag-v6-preparation-config-v1",
+  "source": {
+    "commit_sha": "UNRESOLVED",
+    "ref": "UNRESOLVED",
+    "tree": "UNRESOLVED"
+  },
+  "status": "draft_unresolved",
+  "study": {
+    "answer_capture_profile": "t3_item_results_v2",
+    "architecture_mode": "single_agent",
+    "execution_epoch": "E2T3RAGV6",
+    "formal_execution_contract": "exp2_single_agent_rag_v2",
+    "model_alias": "gpt-5.6-terra",
+    "provider_base_url": "https://api.openai.com/v1",
+    "provider_mode": "openai",
+    "replicates": 5,
+    "task_id": "T3"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/progress_event.schema.json",
+  "title": "RAE Progress Event Payload",
+  "description": "Minimal structured live progress event emitted by RAE during execution so Team IW can show stage-level progress in Jira. Events are written only to the mounted JSONL side-channel specified by runtime_request.output_paths.progress_events_path. This schema does not include final metrics, artifacts, diagnostics, or HDFS paths; those belong to the final runtime response contract. The event shape is a live subset of the final response iteration_traces vocabulary.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "ticket_id",
+    "stage",
+    "status",
+    "timestamp"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this RAE container run. Should match runtime_request.run_id."
+    },
+    "ticket_id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "description": "Jira ticket key, for example SCRUM-46."
+    },
+    "stage": {
+      "type": "string",
+      "description": "Independent execution stage. Stages do not require previous or subsequent stages to fire.",
+      "enum": [
+        "fetch",
+        "modify",
+        "commit",
+        "backtest",
+        "report"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Stage-level live progress status. SUCCESS, FAILED and SKIPPED align with final response iteration_traces. PENDING and RUNNING are live-only progress states.",
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "SUCCESS",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp in RFC3339 / ISO-8601 format."
+    },
+    "iteration": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Optional Swarm/agent iteration number, matching final response iteration_traces where available."
+    },
+    "agent": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Optional agent name, matching final response iteration_traces where available."
+    },
+    "tool_call": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Optional tool call name, matching final response iteration_traces where available."
+    },
+    "message": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500,
+      "description": "Optional short human-readable message. Keep minimal to avoid log noise."
+    }
+  }
+}

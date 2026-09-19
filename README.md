@@ -7,11 +7,11 @@ Project memory, manager–architect–developer coordination, and controlled eva
 
 This repository contains the complete dissertation **code handover package**, including six frozen source snapshots, tests, configuration and dependency files, documentation, selected evaluation tables, and offline verification and analysis tools. The source snapshots remain separate so that each reported experiment can be traced to the code version used.
 
-## Download the complete project
+## Browse the source
 
-[**Download the complete code package**](2026_SiqiZhang_ProjectMemoryAgentCoordination_CODE_HANDOVER.zip)
+[**Main runtime — e4v3_runtime**](code/source_snapshots/e4v3_runtime) · [**All six snapshots**](code/source_snapshots) · [**Analysis**](code/analysis) · [**Documentation**](code/docs)
 
-The archive contains actual implementation source, not just a project summary. Start with the `e4v3_runtime` snapshot for the main portfolio-analysis experiment. Earlier snapshots and separately versioned experiment controls are included for traceability.
+The complete code is expanded into ordinary files and directories. Start with `e4v3_runtime` for the main portfolio-analysis experiment. Earlier snapshots and separately versioned controls remain available for traceability.
 
 ## What I worked on
 
@@ -39,40 +39,41 @@ These are descriptive results for one benchmark. Retrieval did not improve mean 
 
 ## Quick start — no model calls
 
-Download and unzip the package, then open a terminal in its `code` directory:
+Clone this repository, then open a terminal in its `code` directory:
 
 ```bash
-unzip 2026_SiqiZhang_ProjectMemoryAgentCoordination_CODE_HANDOVER.zip
-cd 2026_SiqiZhang_ProjectMemoryAgentCoordination/code
+git clone https://github.com/SiqiZhang77/Agentic-Quantitative-Development-Loop.git
+cd Agentic-Quantitative-Development-Loop/code
 
-# Verify source archives, source files and packaged analytical inputs.
+# Verify expanded source files and packaged analytical inputs.
 python3 tools/verify_and_extract.py
 
 # Recalculate descriptive results from the included tables.
 python3 analysis/reproduce_summaries.py --output reproduced_summaries.json
 
-# Extract the main frozen runtime to inspect its implementation.
-python3 tools/verify_and_extract.py --snapshot e4v3_runtime --destination extracted
+# Browse the main runtime directly.
+cd source_snapshots/e4v3_runtime
 ```
 
-These steps use Python 3.11+ and the standard library. They do not require credentials or call a model. The package's `code/README.md` explains the optional offline test environment and the additional requirements for an operational deployment.
+These steps use Python 3.11+ and the standard library. They do not require credentials or call a model. The historical handover's [code README](code/README.md), together with the [expanded-layout notes](code/docs/EXPANDED_LAYOUT.md), explains the optional offline test environment and the additional requirements for an operational deployment.
 
 ## Package structure
 
 ```text
-2026_SiqiZhang_ProjectMemoryAgentCoordination/
+Agentic-Quantitative-Development-Loop/
 ├── README.md
+├── HANDOVER_README.md
 └── code/
     ├── README.md
     ├── SOURCE_MANIFEST.json
     ├── PACKAGE_SHA256.json
-    ├── source_archives/       # Six separately identified frozen source snapshots
+    ├── source_snapshots/      # Six expanded, separately identified source snapshots
     ├── tools/                 # Verification, extraction and offline tests
     ├── analysis/              # Descriptive analysis and selected evaluation tables
     └── docs/                  # Packaging decisions and validation record
 ```
 
-Main runtime entry points after extraction:
+Main runtime entry points in `code/source_snapshots/e4v3_runtime/`:
 
 - `rae_runtime/proxy/exp3/`: manager-star coordination, role policies and budgets.
 - `jira-chatops-gateway/dags/jira_rag_retriever.py`: frozen project-memory retrieval.
@@ -82,6 +83,6 @@ Main runtime entry points after extraction:
 
 ## Scope and provenance
 
-The original handover files are preserved byte-for-byte inside the downloadable package. Historical documentation describes the original company handover destination. This repository presents the same code package and preserves the original source attribution and licensing notices.
+All frozen source files are preserved byte-for-byte in the expanded snapshot directories. Packaging tools and instructions have been adapted to this layout; original packaging-tool text and checksums are retained for provenance. Historical documentation describes the original company handover destination. This repository presents the same code package and preserves the original source attribution and licensing notices.
 
 The package excludes populated credentials, private evaluator assets, original company Jira records and raw model traces. Running new agents requires separately configured services and credentials. The thesis PDF and final presentation are separate deliverables and are not included in this code package. Consult the packaged documentation for evaluation limitations and source-version mappings.

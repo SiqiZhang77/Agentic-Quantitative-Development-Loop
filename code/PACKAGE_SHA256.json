@@ -1,0 +1,24 @@
+{
+  "files": {
+    "README.md": "7992ac7400a431ce75a8d74a94a7eb43ac23a46e4a7d938e46c4980ef2376261",
+    "SOURCE_MANIFEST.json": "3ebe51046df7e427a11a3354c21e707a8cc30fd8ac1ef2a8ecadefbc3508ed88",
+    "analysis/DATA_PROVENANCE.json": "52aa6db346568ce344672b85168e334ca16cb95e05d5a2121ffa71841899ea0f",
+    "analysis/README.md": "276d71fd270b472740fac46c1811658c602a38fb2cfe34cf78fdf3e367a3b3ba",
+    "analysis/data/relevance_grades.csv": "2b41cbe8f5c1b04a1e5450bc363ee724bff3ac04d1e2639f369472af3ccda5f2",
+    "analysis/data/retrieval_metrics.csv": "99d726e6ff97b53d50193272d43194e3b2eea6419d1b52a312ba2dd5fec8470f",
+    "analysis/data/t12_scores.csv": "65e9b027ea0124e417c132fcc223420697e636641cf6f8eea4658e811a9564be",
+    "analysis/data/t3_items.csv": "80d52c180130c883facf444fb60214963e9155d440437712165f819de13450a5",
+    "analysis/data/t3_resources.csv": "b351e6d4bb7a5a38ccef8fcf4adae764b792e65285df7d56e62ff93343b07876",
+    "analysis/data/t3_runs.csv": "d4717c1bde0dc686c01fe9fff48bd470cfdceacd09aa83f159074cb49fb26e13",
+    "analysis/reproduce_summaries.py": "e1ba831cfab0308ada37d1470d78ee6b923291c7c5aec15cb9bf2f6f39fadcc4",
+    "docs/EXPANDED_LAYOUT.md": "7057609793d9fc1c389c36b63e3d3bdde85ad7317e0981637b13c993456bef32",
+    "docs/ORIGINAL_PACKAGE_SHA256.json": "ff95298fddf1dea05ffab2c2f1624d6cfb693a77d00cc4dffc1ac55b33948140",
+    "docs/PACKAGING_DECISIONS.md": "a1843bfeb15f876c2a3ac86481138cf0d7d66198b735df9ff15e280d2ab09776",
+    "docs/VALIDATION.md": "c70c1407c8b0028c641330ba171a2fba0e27ecbf58b0c4e4af6ce7ad8d97fb2b",
+    "docs/original-packaging-tools/run_offline_tests.py.txt": "44805ee95a20fbc8ee8b75a513ec8ed0b42b24af1400b5327517822ad0e330b5",
+    "docs/original-packaging-tools/verify_and_extract.py.txt": "215f4e7da5c7815ae27bddefc85873b9bca139347217f6da940bd95922df2f14",
+    "tools/requirements-offline.txt": "1dc2a841766cf2b5c1390640f5e3f98fd58e513990885e94fd17c6aa53d4cd7b",
+    "tools/run_offline_tests.py": "298f12cbc91e2e167404c94d6a5c7028d32e426f0b7e0b75a35fc41660bd535e",
+    "tools/verify_and_extract.py": "75e9e64264f3c0cfa8fdc7dba2e3a76df45e9248b1837b141228b81dff886b52"
+  }
+}

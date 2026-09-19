@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-46_20260618_003",
+  "execution_summary": {
+    "ticket_id": "SCRUM-46",
+    "status": "timeout",
+    "request_type": "backtest",
+    "start_time": "2026-06-18T12:00:00Z",
+    "end_time": "2026-06-18T13:30:00Z",
+    "iteration_traces": [
+      {
+        "iteration": 1,
+        "agent": "planner_agent",
+        "tool_call": "parse_execution_objectives",
+        "status": "succeeded",
+        "message": "Parsed the requested backtest objective.",
+        "timestamp": "2026-06-18T12:01:00Z"
+      },
+      {
+        "iteration": 2,
+        "agent": "backtest_agent",
+        "tool_call": "run_backtest",
+        "status": "failed",
+        "message": "Backtest did not complete before the runtime timeout.",
+        "timestamp": "2026-06-18T13:30:00Z"
+      }
+    ]
+  },
+  "performance_metrics": null,
+  "generated_artifacts": {
+    "modified_files": [],
+    "new_files": [],
+    "backtest_plots_path": null,
+    "branch_name": null
+  },
+  "diagnostics": {
+    "error_code": "TIMEOUT_REACHED",
+    "error_message": "The RAE workflow reached the configured timeout before completing.",
+    "raw_log_reference": "/workspace/output/artifacts/run.log"
+  },
+  "telemetry": {
+    "execution_time_seconds": 5400.0,
+    "container_exit_code": 124,
+    "retry_count": 0,
+    "model_usage": [],
+    "stage_timings": [],
+    "audit_trace": null
+  },
+    "evaluation": {
+    "met_criteria": null,
+    "confidence": 0.0,
+    "criteria_results": [],
+    "unrecognised_criteria": [],
+    "summary": "Run timed out before final criteria could be scored."
+  },
+  "recommended_action": "escalate"
+}
+  
+

@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/exp4-e4v1-prospective-config-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "experiment_id", "freeze_status", "task_ids",
+    "replicate_count", "conditions", "williams_order", "block_order_seed",
+    "source", "control", "runtime", "task_bindings", "evaluator_bindings",
+    "retrieval_binding", "shared_budget", "manager_star_role_budget",
+    "execution"
+  ],
+  "properties": {
+    "schema_version": {"const": "exp4-e4v1-prospective-config-v1"},
+    "experiment_id": {"const": "E4V1"},
+    "freeze_status": {
+      "type": "string",
+      "enum": ["prospective_unready", "ready_for_freeze"]
+    },
+    "task_ids": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "T1"}, {"const": "T2"}, {"const": "T3"}
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "replicate_count": {"const": 4},
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["M0R0", "M0R1", "M1R0", "M1R1"],
+      "properties": {
+        "M0R0": {"const": {"architecture_mode": "single_agent", "rag_enabled": false, "retrieval_context_included": false, "role_topology": "single_agent"}},
+        "M0R1": {"const": {"architecture_mode": "single_agent", "rag_enabled": true, "retrieval_context_included": true, "role_topology": "single_agent"}},
+        "M1R0": {"const": {"architecture_mode": "manager_star", "rag_enabled": false, "retrieval_context_included": false, "role_topology": "manager_star"}},
+        "M1R1": {"const": {"architecture_mode": "manager_star", "rag_enabled": true, "retrieval_context_included": true, "role_topology": "manager_star"}}
+      }
+    },
+    "williams_order": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["1", "2", "3", "4"],
+      "properties": {
+        "1": {"$ref": "#/$defs/order"},
+        "2": {"$ref": "#/$defs/order"},
+        "3": {"$ref": "#/$defs/order"},
+        "4": {"$ref": "#/$defs/order"}
+      }
+    },
+    "block_order_seed": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "source_ref", "source_commit"],
+      "properties": {
+        "repository": {"const": "bankingscience/BSLAgenticQuantDevLoop"},
+        "source_ref": {"$ref": "#/$defs/nonempty"},
+        "source_commit": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "control_ref", "control_commit", "control_files"],
+      "properties": {
+        "repository": {"const": "bankingscience/BSLAgenticQuantDevLoop"},
+        "control_ref": {"$ref": "#/$defs/nonempty"},
+        "control_commit": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        },
+        "control_files": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/fileBinding"}
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_ref", "image_digest", "formal_execution_contract",
+        "rag_delivery_policy", "runtime_request_schema_sha256",
+        "runtime_response_schema_sha256", "item_submission_schema_sha256",
+        "tool_implementation_sha256", "model_visible_tool_fingerprint_sha256",
+        "provider_identity_sha256", "provider_mode", "provider_base_url", "model_alias"
+      ],
+      "properties": {
+        "image_ref": {"$ref": "#/$defs/nonempty"},
+        "image_digest": {
+          "oneOf": [
+            {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        },
+        "formal_execution_contract": {"const": "factorial_rag_architecture_v1"},
+        "rag_delivery_policy": {"const": "all_model_stages_v1"},
+        "runtime_request_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "runtime_response_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "item_submission_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "tool_implementation_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "model_visible_tool_fingerprint_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "provider_identity_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "provider_mode": {"enum": ["openai", "company_litellm"]},
+        "provider_base_url": {"type": "string", "format": "uri"},
+        "model_alias": {"type": "string", "minLength": 1}
+      }
+    },
+    "task_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["T1", "T2", "T3"],
+      "properties": {
+        "T1": {"$ref": "#/$defs/taskBinding"},
+        "T2": {"$ref": "#/$defs/taskBinding"},
+        "T3": {"$ref": "#/$defs/t3TaskBinding"}
+      }
+    },
+    "evaluator_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["T1", "T2", "T3", "coordinator_sha256"],
+      "properties": {
+        "T1": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "T2": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "T3": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "coordinator_sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+      }
+    },
+    "retrieval_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_query_context", "retriever_name", "retriever_version", "corpus_id", "corpus_sha256",
+        "index_id", "index_sha256", "exclusion_list_id",
+        "exclusion_list_sha256", "cutoff_at", "requested_top_k",
+        "max_memories_per_source_ticket"
+      ],
+      "properties": {
+        "task_query_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["T1", "T2", "T3"],
+          "properties": {
+            "T1": {"$ref": "#/$defs/queryContextBinding"},
+            "T2": {"$ref": "#/$defs/queryContextBinding"},
+            "T3": {"$ref": "#/$defs/queryContextBinding"}
+          }
+        },
+        "retriever_name": {"$ref": "#/$defs/nonempty"},
+        "retriever_version": {"$ref": "#/$defs/nonempty"},
+        "corpus_id": {"$ref": "#/$defs/nonempty"},
+        "corpus_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "index_id": {"$ref": "#/$defs/nonempty"},
+        "index_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "exclusion_list_id": {"$ref": "#/$defs/nonempty"},
+        "exclusion_list_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "cutoff_at": {"$ref": "#/$defs/nonempty"},
+        "requested_top_k": {"const": 5},
+        "max_memories_per_source_ticket": {"const": 2}
+      }
+    },
+    "shared_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts", "max_model_calls_per_attempt", "max_tokens_per_attempt",
+        "max_model_calls_per_observation", "max_tokens_per_observation",
+        "attempt_timeout_seconds", "observation_timeout_seconds", "cpu_vcpus",
+        "memory_mb", "pids_limit"
+      ],
+      "properties": {
+        "max_attempts": {"const": 2},
+        "max_model_calls_per_attempt": {"const": 20},
+        "max_tokens_per_attempt": {"const": 350000},
+        "max_model_calls_per_observation": {"const": 40},
+        "max_tokens_per_observation": {"const": 700000},
+        "attempt_timeout_seconds": {"const": 1800},
+        "observation_timeout_seconds": {"const": 3600},
+        "cpu_vcpus": {"const": 2},
+        "memory_mb": {"const": 4096},
+        "pids_limit": {"const": 256}
+      }
+    },
+    "manager_star_role_budget": {"$ref": "#/$defs/roleBudget"},
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serial", "observations_per_authorization",
+        "advance_only_after_block_audit", "agreement_generation_enabled",
+        "formal_model_execution_enabled"
+      ],
+      "properties": {
+        "serial": {"const": true},
+        "observations_per_authorization": {"const": 4},
+        "advance_only_after_block_audit": {"const": true},
+        "agreement_generation_enabled": {"const": false},
+        "formal_model_execution_enabled": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "placeholder": {
+      "type": "string",
+      "pattern": "^__UNRESOLVED_[A-Z0-9_]+__$"
+    },
+    "hashOrPlaceholder": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        {"$ref": "#/$defs/placeholder"}
+      ]
+    },
+    "nonempty": {"type": "string", "minLength": 1},
+    "nonnegativeIntegerOrPlaceholder": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0},
+        {"$ref": "#/$defs/placeholder"}
+      ]
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nonempty"},
+        "sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+      }
+    },
+    "queryContextBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query_path", "query_sha256", "retrieval_context_path",
+        "retrieval_context_sha256", "retrieval_context_byte_count",
+        "memory_count"
+      ],
+      "properties": {
+        "query_path": {"$ref": "#/$defs/nonempty"},
+        "query_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "retrieval_context_path": {"$ref": "#/$defs/nonempty"},
+        "retrieval_context_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "retrieval_context_byte_count": {"$ref": "#/$defs/nonnegativeIntegerOrPlaceholder"},
+        "memory_count": {
+          "oneOf": [
+            {"type": "integer", "minimum": 0, "maximum": 5},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture_mode", "rag_enabled", "retrieval_context_included",
+        "role_topology"
+      ],
+      "properties": {
+        "architecture_mode": {"enum": ["single_agent", "manager_star"]},
+        "rag_enabled": {"type": "boolean"},
+        "retrieval_context_included": {"type": "boolean"},
+        "role_topology": {"enum": ["single_agent", "manager_star"]}
+      }
+    },
+    "order": {
+      "type": "array",
+      "items": {"enum": ["M0R0", "M0R1", "M1R0", "M1R1"]},
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true
+    },
+    "taskBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answer_capture_profile", "task_text_path", "task_text_sha256", "public_inputs"],
+      "properties": {
+        "answer_capture_profile": {"type": "null"},
+        "task_text_path": {"$ref": "#/$defs/nonempty"},
+        "task_text_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "public_inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": {"$ref": "#/$defs/nonempty"},
+              "sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+            }
+          }
+        }
+      }
+    },
+    "t3TaskBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite_version", "answer_capture_profile", "suite_root", "task_text_path", "task_text_sha256",
+        "rubric_path", "rubric_sha256", "public_inputs",
+        "item_submission_schema_path", "item_submission_schema_sha256",
+        "output_schema_path", "output_schema_sha256", "result_contract"
+      ],
+      "properties": {
+        "suite_version": {"const": "t3-quant-suite-v2"},
+        "answer_capture_profile": {"const": "t3_item_results_v2"},
+        "suite_root": {"const": "experiments/shared/t3-quant-suite-v2"},
+        "task_text_path": {"const": "experiments/shared/t3-quant-suite-v2/TASK.md"},
+        "task_text_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "rubric_path": {"const": "experiments/shared/t3-quant-suite-v2/RUBRIC.md"},
+        "rubric_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "public_inputs": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256"],
+              "properties": {
+                "path": {"const": "experiments/shared/t3-quant-suite-v2/input/synthetic_portfolio_returns_v1.csv"},
+                "sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256"],
+              "properties": {
+                "path": {"const": "experiments/shared/t3-quant-suite-v2/input/portfolio_config_v1.json"},
+                "sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+              }
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "item_submission_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/item_submission_schema_v2.json"},
+        "item_submission_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "output_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/output_schema_v1.json"},
+        "output_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "result_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scorer_result_schema_path", "scorer_result_schema_sha256",
+            "scorer_result_validator_path", "scorer_result_validator_sha256",
+            "scorer_result_schema_version",
+            "primary_outcome", "required_item_count", "required_item_ids",
+            "reported_item_states",
+            "item_state_is_separate_from_mathematical_correctness",
+            "missing_items_reduce_correct_items_out_of_25",
+            "missing_reported_separately_from_submitted_incorrect",
+            "saved_accepted_items_survive_runtime_failure",
+            "latest_accepted_saved_candidate_is_primary",
+            "checkpoint_or_artifact_fills_only_missing_items"
+          ],
+          "properties": {
+            "scorer_result_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/scorer_result_schema_v2.json"},
+            "scorer_result_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+            "scorer_result_validator_path": {"const": "experiments/shared/t3-quant-suite-v2/scorer_result_validator.py"},
+            "scorer_result_validator_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+            "scorer_result_schema_version": {"const": "t3-quant-scorer-result-v2"},
+            "primary_outcome": {"const": "correct_items_out_of_25"},
+            "required_item_count": {"const": 25},
+            "required_item_ids": {"const": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]},
+            "reported_item_states": {"const": ["accepted", "invalid_format", "explicit_abstain", "tool_failure", "not_attempted"]},
+            "item_state_is_separate_from_mathematical_correctness": {"const": true},
+            "missing_items_reduce_correct_items_out_of_25": {"const": true},
+            "missing_reported_separately_from_submitted_incorrect": {"const": true},
+            "saved_accepted_items_survive_runtime_failure": {"const": true},
+            "latest_accepted_saved_candidate_is_primary": {"const": true},
+            "checkpoint_or_artifact_fills_only_missing_items": {"const": true}
+          }
+        }
+      }
+    },
+    "roleSlice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {
+        "max_calls": {"type": "integer", "minimum": 1},
+        "max_tokens": {"const": 350000}
+      }
+    },
+    "roleBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manager", "architect", "developer", "unused_capacity_transferable",
+        "applies_per_attempt"
+      ],
+      "properties": {
+        "manager": {"$ref": "#/$defs/roleSlice"},
+        "architect": {"$ref": "#/$defs/roleSlice"},
+        "developer": {"$ref": "#/$defs/roleSlice"},
+        "unused_capacity_transferable": {"const": true},
+        "applies_per_attempt": {"const": true}
+      }
+    }
+  }
+}

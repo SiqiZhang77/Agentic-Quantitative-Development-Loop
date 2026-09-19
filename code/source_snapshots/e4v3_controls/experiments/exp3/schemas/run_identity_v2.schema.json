@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/exp3/run_identity_v2.schema.json",
+  "title": "Experiment 3 draft-local run identity v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "experiment_id", "protocol_version", "status",
+    "run_key", "task_id", "replicate", "architecture_mode", "rag_enabled",
+    "retrieval_context_included", "provider_mode", "provider_base_url",
+    "provider_identity_sha256", "model_alias", "source_ref", "source_commit",
+    "target_ref", "paired_target_ref", "task_text_sha256",
+    "public_inputs_sha256", "rubric_sha256", "tool_implementation_sha256",
+    "sandbox_profile_sha256", "negative_ref_manifest_sha256", "shared_budget",
+    "role_budgets", "runtime_limits"
+  ],
+  "properties": {
+    "schema_version": {"const": "exp3-run-identity-v2"},
+    "experiment_id": {"const": "E3-manager-star-v1"},
+    "protocol_version": {"const": "1.0.0-rc2"},
+    "status": {"const": "draft_local_only"},
+    "run_key": {"type": "string", "pattern": "^E3-T[123]-R[123]-M[01]$"},
+    "task_id": {"type": "string", "enum": ["T1", "T2", "T3"]},
+    "replicate": {"type": "integer", "minimum": 1, "maximum": 3},
+    "architecture_mode": {"type": "string", "enum": ["single_agent", "manager_star"]},
+    "rag_enabled": {"const": false},
+    "retrieval_context_included": {"const": false},
+    "provider_mode": {"type": "string", "enum": ["company_litellm", "openai"]},
+    "provider_base_url": {"type": "string", "format": "uri", "minLength": 1, "maxLength": 500},
+    "provider_identity_sha256": {"$ref": "#/$defs/hash"},
+    "model_alias": {"type": "string", "minLength": 1, "maxLength": 200},
+    "source_ref": {"$ref": "#/$defs/ref"},
+    "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "target_ref": {"$ref": "#/$defs/ref"},
+    "paired_target_ref": {"$ref": "#/$defs/ref"},
+    "task_text_sha256": {"$ref": "#/$defs/hash"},
+    "public_inputs_sha256": {
+      "type": "object",
+      "propertyNames": {"pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"},
+      "additionalProperties": {"$ref": "#/$defs/hash"}
+    },
+    "rubric_sha256": {"$ref": "#/$defs/hash"},
+    "tool_implementation_sha256": {"$ref": "#/$defs/hash"},
+    "sandbox_profile_sha256": {"$ref": "#/$defs/hash"},
+    "negative_ref_manifest_sha256": {"$ref": "#/$defs/hash"},
+    "shared_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {"max_calls": {"const": 15}, "max_tokens": {"const": 200000}}
+    },
+    "role_budgets": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["manager", "architect", "developer", "unused_capacity_transferable"],
+          "properties": {
+            "manager": {"$ref": "#/$defs/managerBudget"},
+            "architect": {"$ref": "#/$defs/architectBudget"},
+            "developer": {"$ref": "#/$defs/developerBudget"},
+            "unused_capacity_transferable": {"const": false}
+          }
+        }
+      ]
+    },
+    "runtime_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeout_seconds", "cpu_vcpus", "memory_mb", "pids_limit"],
+      "properties": {
+        "timeout_seconds": {"const": 1800},
+        "cpu_vcpus": {"const": 2},
+        "memory_mb": {"const": 4096},
+        "pids_limit": {"const": 256}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"architecture_mode": {"const": "manager_star"}}},
+      "then": {"properties": {"role_budgets": {"type": "object"}}},
+      "else": {"properties": {"role_budgets": {"type": "null"}}}
+    }
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "ref": {"type": "string", "pattern": "^[A-Za-z0-9._/-]{1,200}$"},
+    "managerBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {"max_calls": {"const": 3}, "max_tokens": {"const": 45000}}
+    },
+    "architectBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {"max_calls": {"const": 3}, "max_tokens": {"const": 35000}}
+    },
+    "developerBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {"max_calls": {"const": 9}, "max_tokens": {"const": 120000}}
+    }
+  }
+}

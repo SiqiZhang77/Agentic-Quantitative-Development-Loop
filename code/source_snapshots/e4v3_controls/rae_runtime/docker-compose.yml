@@ -1,0 +1,23 @@
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: sandbox/Dockerfile
+    image: agenticloop-sandbox:dev
+    ports:
+      - "8000:8000"
+    environment:
+      - TICKET_ID=${TICKET_ID:-ALPHA-000}
+      - PYTHONDONTWRITEBYTECODE=1  # don't try to write .pyc onto read-only FS
+      - API_KEY=${API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    # Runtime hardening
+    mem_limit: 512m
+    pids_limit: 256
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true  # root filesystem is read-only
+    tmpfs:
+      - /tmp

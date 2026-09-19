@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-46_20260618_001",
+  "repository_details": [
+    {
+      "alias": "BSLAgenticQuantDevLoop",
+      "repo_full_name": "bankingscience/BSLAgenticQuantDevLoop",
+      "clone_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop.git",
+      "source_branch": "main",
+      "target_branch": "quant/SCRUM-46",
+      "runtime_role": "default",
+      "allowed_directories": [
+        "src/strategies",
+        "rae_runtime",
+        "reports"
+      ]
+    }
+  ],
+  "jira_metadata": {
+    "ticket_id": "SCRUM-46",
+    "current_status": "In Progress",
+    "summary": "Run momentum backtest for AAPL",
+    "description": "Run a momentum strategy backtest for AAPL over the requested date range and return the performance metrics to Jira.",
+    "triggering_comment": {
+      "comment_id": "10001",
+      "timestamp": "2026-06-18T10:30:00Z",
+      "author": "Example User",
+      "text": "/quant Backtest momentum strategy ticker=AAPL strategy=momentum start_date=2024-01-01 end_date=2024-12-31"
+    },
+    "events_history": [
+      {
+        "event_type": "comment",
+        "timestamp": "2026-06-18T10:30:00Z",
+        "author": "Example User",
+        "text": "/quant Backtest momentum strategy ticker=AAPL strategy=momentum start_date=2024-01-01 end_date=2024-12-31"
+      },
+      {
+        "event_type": "status_change",
+        "timestamp": "2026-06-18T10:31:00Z",
+        "author": "jira-automation",
+        "text": "Ticket moved from To Do to In Progress."
+      }
+    ]
+  },
+  "execution_objectives": {
+    "strategy_type": "backtest",
+    "stock_type": "AAPL",
+    "target_date_range": {
+      "start_date": "2024-01-01",
+      "end_date": "2024-12-31"
+    },
+    "parsed_task_parameters": {
+      "ticker": "AAPL",
+      "strategy": "momentum",
+      "start": "2024-01-01",
+      "end": "2024-12-31"
+    },
+    "system_instruction_override": null
+  },
+  "iteration_controls": {
+    "max_iterations": 5,
+    "max_failed_iterations": 1,
+    "timeout_seconds": 5400,
+    "max_token_budget_per_run": 100000
+  },
+  "resource_requirements": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "gpu_count": 0,
+    "execution_timeout_seconds": 2100,
+    "pids_limit": 256,
+    "yarn_queue": "root.default"
+  },
+  "output_paths": {
+    "result_path": "/workspace/output/result.json",
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl"
+  }
+}

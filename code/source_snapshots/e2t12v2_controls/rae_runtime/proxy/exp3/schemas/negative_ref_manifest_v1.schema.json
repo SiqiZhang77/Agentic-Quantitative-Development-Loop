@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/exp3/negative_ref_manifest_v1.schema.json",
+  "title": "Experiment 3 negative ref manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "run_id",
+    "repositories"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "exp3-negative-ref-manifest-v1"
+    },
+    "experiment_id": {
+      "const": "E3-manager-star-v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repo_full_name",
+          "source_ref",
+          "current_target_ref",
+          "paired_target_ref",
+          "deny_refs"
+        ],
+        "properties": {
+          "repo_full_name": {
+            "type": "string",
+            "pattern": "^bankingscience/[A-Za-z0-9_.-]+$"
+          },
+          "source_ref": {
+            "$ref": "#/$defs/ref"
+          },
+          "current_target_ref": {
+            "$ref": "#/$defs/ref"
+          },
+          "paired_target_ref": {
+            "$ref": "#/$defs/ref"
+          },
+          "deny_refs": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "v5_refs",
+              "e2_output_refs",
+              "earlier_e3_targets",
+              "protected_refs",
+              "arbitrary_probe_refs"
+            ],
+            "properties": {
+              "v5_refs": {
+                "$ref": "#/$defs/nonempty_ref_array"
+              },
+              "e2_output_refs": {
+                "$ref": "#/$defs/nonempty_ref_array"
+              },
+              "earlier_e3_targets": {
+                "$ref": "#/$defs/ref_array"
+              },
+              "protected_refs": {
+                "$ref": "#/$defs/nonempty_ref_array"
+              },
+              "arbitrary_probe_refs": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/ref"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ref": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._/-]{1,200}$"
+    },
+    "ref_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    },
+    "nonempty_ref_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    }
+  }
+}

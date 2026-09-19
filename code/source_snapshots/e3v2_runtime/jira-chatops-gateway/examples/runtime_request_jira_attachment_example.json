@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-196_20260720_001",
+  "repository_details": [
+    {
+      "clone_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop.git",
+      "target_branch": "quant/SCRUM-52",
+      "allowed_directories": [
+        "src/data"
+      ]
+    }
+  ],
+  "jira_metadata": {
+    "ticket_id": "SCRUM-196",
+    "current_status": "In Progress",
+    "summary": "Analyse a Jira-attached monthly-return dataset",
+    "description": "Use the verified Jira CSV attachment without modifying repository code.",
+    "triggering_comment": {
+      "comment_id": "10195",
+      "timestamp": "2026-06-18T13:55:00Z",
+      "author": "Example User",
+      "text": "/quant Analyse the attached Experiment 2 dataset strategy_type=analysis zero_code_modifications=true input_attachment=experiment_2_input.csv"
+    },
+    "events_history": [
+      {
+        "event_type": "comment",
+        "timestamp": "2026-07-20T09:00:00Z",
+        "author": "Example User",
+        "text": "/quant Analyse the attached Experiment 2 dataset strategy_type=analysis zero_code_modifications=true input_attachment=experiment_2_input.csv"
+      }
+    ]
+  },
+  "execution_objectives": {
+    "strategy_type": "analysis",
+    "stock_type": null,
+    "target_date_range": {},
+    "parsed_task_parameters": {
+      "input_attachment": "experiment_2_input.csv",
+      "objective": "Analyse the attached Experiment 2 dataset"
+    },
+    "system_instruction_override": null,
+    "zero_code_modifications": true
+  },
+  "iteration_controls": {
+    "max_iterations": 3,
+    "max_failed_iterations": 1,
+    "timeout_seconds": 1800,
+    "max_token_budget_per_run": 50000
+  },
+  "resource_requirements": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "gpu_count": 0,
+    "execution_timeout_seconds": 1200,
+    "pids_limit": 256,
+    "yarn_queue": "root.default"
+  },
+  "output_paths": {
+    "result_path": "/workspace/output/result.json",
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl"
+  },
+  "input_datasets": [
+    {
+      "dataset_id": "experiment_2_input",
+      "source_kind": "jira_attachment",
+      "original_filename": "experiment_2_input.csv",
+      "source_uri": "jira-attachment://20001",
+      "jira_attachment_id": "20001",
+      "jira_mime_type": "text/csv",
+      "jira_created": "2026-07-20T09:00:00.000+0000",
+      "run_staged_hdfs_uri": "hdfs://namenode:8020/user/masteruser/quant-sandbox-runs/SCRUM-196/run/input/datasets/experiment_2_input.csv",
+      "container_path": "/workspace/input/datasets/experiment_2_input.csv",
+      "format": "csv",
+      "read_only": true,
+      "size_bytes": 9620,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ]
+}

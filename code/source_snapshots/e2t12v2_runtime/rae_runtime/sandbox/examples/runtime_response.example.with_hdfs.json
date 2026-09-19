@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run-001",
+  "execution_summary": {
+    "ticket_id": "SCRUM-46",
+    "status": "SUCCESS",
+    "start_time": "2026-06-22T10:00:00+00:00",
+    "end_time": "2026-06-22T10:45:00+00:00",
+    "zero_code_modifications": true,
+    "hdfs_upload_required": true,
+    "iteration_traces": [
+      {
+        "iteration": 1,
+        "agent": "backtest_agent",
+        "tool_call": "submit_backtest",
+        "status": "SUCCESS",
+        "message": "Backtest completed",
+        "timestamp": "2026-06-22T10:30:00+00:00"
+      },
+      {
+        "iteration": 2,
+        "agent": "artifact_agent",
+        "tool_call": "upload_forcluster_to_hdfs",
+        "status": "SUCCESS",
+        "message": "forCluster uploaded to HDFS",
+        "timestamp": "2026-06-22T10:40:00+00:00"
+      }
+    ]
+  },
+  "performance_metrics": {
+    "total_return": 0.12,
+    "sharpe_ratio": 1.35,
+    "max_drawdown": -0.08,
+    "alpha": 0.03,
+    "beta": 0.92,
+    "time_series_data_path": "/workspace/output/equity_curve.csv"
+  },
+  "generated_artifacts": {
+    "modified_files": [],
+    "new_files": [],
+    "backtest_plots_path": "/workspace/output/artifacts/backtest_plot.png",
+    "data_paths": {
+      "weles_forcluster_path": "/home/molivares/simulation-results/example/opt/simulations-service/deployed-jobs/example/forCluster",
+      "amok_landing_path": "/home/molivares/BacktestsLanding/example",
+      "hdfs_uploaded_path": "/shared/model-logs/2026-06-20_WaW_EU/example"
+    }
+  },
+  "diagnostics": {
+    "error_code": null,
+    "error_message": null,
+    "raw_log_reference": "/workspace/output/execution.log"
+  }
+}

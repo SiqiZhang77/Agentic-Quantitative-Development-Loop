@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/t3-quant-item-submission-v1.schema.json",
+  "title": "T3 Quant Item Submission v1",
+  "description": "Public structural contract for one submit_t3_items request. Numeric candidates refer to results retained from this run's quant_calculate calls; they never inline hidden arrays or rows. Validation confirms structure only and does not assess mathematical correctness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "t3-quant-item-submission-v1"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 25,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "candidate_type",
+              "calculation_id",
+              "result_id"
+            ],
+            "properties": {
+              "item_id": {
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  13,
+                  14,
+                  15
+                ]
+              },
+              "candidate_type": {
+                "const": "numeric_vector_ref"
+              },
+              "calculation_id": {
+                "type": "string",
+                "pattern": "^calculation-[1-4]$",
+                "description": "ID returned by an earlier successful quant_calculate call in this run."
+              },
+              "result_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "description": "Result ID returned inside the referenced successful calculation."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "candidate_type",
+              "calculation_id",
+              "result_id"
+            ],
+            "properties": {
+              "item_id": {
+                "enum": [
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  16,
+                  20,
+                  21,
+                  22,
+                  23,
+                  24
+                ]
+              },
+              "candidate_type": {
+                "const": "numeric_scalar_ref"
+              },
+              "calculation_id": {
+                "type": "string",
+                "pattern": "^calculation-[1-4]$",
+                "description": "ID returned by an earlier successful quant_calculate call in this run."
+              },
+              "result_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "description": "Result ID returned inside the referenced successful calculation."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "candidate_type",
+              "value"
+            ],
+            "properties": {
+              "item_id": {
+                "enum": [
+                  17,
+                  25
+                ]
+              },
+              "candidate_type": {
+                "const": "date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "candidate_type",
+              "values"
+            ],
+            "properties": {
+              "item_id": {
+                "const": 18
+              },
+              "candidate_type": {
+                "const": "date_list"
+              },
+              "values": {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "candidate_type",
+              "calculation_id",
+              "result_id",
+              "indices"
+            ],
+            "properties": {
+              "item_id": {
+                "const": 19
+              },
+              "candidate_type": {
+                "const": "rebalance_rows_ref"
+              },
+              "calculation_id": {
+                "type": "string",
+                "pattern": "^calculation-[1-4]$",
+                "description": "ID returned by an earlier successful quant_calculate call in this run."
+              },
+              "result_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "description": "Result ID returned inside the referenced successful calculation."
+              },
+              "indices": {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 6,
+                "uniqueItems": true,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

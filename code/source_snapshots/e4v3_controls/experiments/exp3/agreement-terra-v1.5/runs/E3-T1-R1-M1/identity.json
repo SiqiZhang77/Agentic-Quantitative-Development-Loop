@@ -1,0 +1,51 @@
+{
+  "architecture_mode": "manager_star",
+  "experiment_id": "E3-manager-star-v1",
+  "model_alias": "gpt-5.6-terra",
+  "negative_ref_manifest_sha256": "2af0411a2e81388a5e60b323b35e0726aee79850a464c8756d691dbf69e73bf8",
+  "paired_target_ref": "quant/E3-T1-R1-M0",
+  "protocol_version": "1.0.0-rc2",
+  "provider_base_url": "https://api.openai.com/v1",
+  "provider_identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+  "provider_mode": "openai",
+  "public_inputs_sha256": {},
+  "rag_enabled": false,
+  "replicate": 1,
+  "retrieval_context_included": false,
+  "role_budgets": {
+    "architect": {
+      "max_calls": 3,
+      "max_tokens": 35000
+    },
+    "developer": {
+      "max_calls": 9,
+      "max_tokens": 120000
+    },
+    "manager": {
+      "max_calls": 3,
+      "max_tokens": 45000
+    },
+    "unused_capacity_transferable": false
+  },
+  "rubric_sha256": "d55e2203461c2d044f62c00d7677bc0d9b1a5f2c3d7a660742a94adba4541c79",
+  "run_key": "E3-T1-R1-M1",
+  "runtime_limits": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "pids_limit": 256,
+    "timeout_seconds": 1800
+  },
+  "sandbox_profile_sha256": "e1d83459b29ab25be0bac50e0fc65c5754dd341491e995699bc3d13a6f4c25e8",
+  "schema_version": "exp3-run-identity-v2",
+  "shared_budget": {
+    "max_calls": 15,
+    "max_tokens": 200000
+  },
+  "source_commit": "d22af8748c152be865bd854a222875fdf8bdd10d",
+  "source_ref": "exp3/terra-source-v6",
+  "status": "draft_local_only",
+  "target_ref": "quant/E3-T1-R1-M1",
+  "task_id": "T1",
+  "task_text_sha256": "bfa2181b565dc530e694b594b1af005d6669e4209fa959fbeb21a84904550fbd",
+  "tool_implementation_sha256": "9676f0bb716dcdc5ee64e24aaf5f2dc1972fd2e99113546f8b103bba1dd87769"
+}

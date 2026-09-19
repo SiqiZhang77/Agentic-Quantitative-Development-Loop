@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Verify all retained source bytes and optionally extract one snapshot (offline)."""
+import argparse,hashlib,json,stat,zipfile
+from pathlib import Path,PurePosixPath
+ROOT=Path(__file__).resolve().parents[1]
+def verify():
+ inventory=ROOT/'PACKAGE_SHA256.json'
+ if inventory.exists():
+  for name,expected in json.loads(inventory.read_text())['files'].items():
+   path=ROOT/name
+   assert path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==expected,name
+  print('Verified packaged documentation, tools and analytical inputs.')
+ manifest=json.loads((ROOT/'SOURCE_MANIFEST.json').read_text())
+ for snap in manifest['snapshots']:
+  archive=ROOT/snap['archive']
+  assert hashlib.sha256(archive.read_bytes()).hexdigest()==snap['archive_sha256'],archive.name
+  with zipfile.ZipFile(archive) as z:
+   expected={snap['id']+'/'+f['path']:f for f in snap['files']}
+   assert len(z.infolist())==len(expected) and set(z.namelist())==set(expected),archive.name
+   for name,f in expected.items():
+    p=PurePosixPath(name);assert not p.is_absolute() and '..' not in p.parts
+    info=z.getinfo(name);assert not stat.S_ISLNK(info.external_attr>>16)
+    b=z.read(name);assert len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'],name
+  print(f"Verified {snap['id']}: {snap['file_count']} source files at {snap['source_commit']}")
+ return manifest
+
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--snapshot');p.add_argument('--destination',type=Path,default=Path('extracted'));a=p.parse_args()
+ m=verify()
+ if a.snapshot:
+  s=next((s for s in m['snapshots'] if s['id']==a.snapshot),None)
+  if s is None:p.error('Unknown snapshot; consult SOURCE_MANIFEST.json')
+  dest=a.destination.resolve();target=dest/a.snapshot
+  if target.exists():p.error(f'Refusing to overwrite existing directory: {target}')
+  dest.mkdir(parents=True,exist_ok=True)
+  with zipfile.ZipFile(ROOT/s['archive']) as z:
+   for item in z.infolist():
+    out=dest/item.filename;out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(z.read(item));out.chmod((item.external_attr>>16)&0o777)
+  print(f'Extracted {target}')
+if __name__=='__main__':main()

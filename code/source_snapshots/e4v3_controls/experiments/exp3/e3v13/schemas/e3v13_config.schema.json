@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/exp3-e3v13-prospective-config-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "experiment_id", "study_id", "freeze_status",
+    "task_id", "replicate_count", "arm_order", "conditions", "source",
+    "runtime", "task_suite", "tool_contract", "shared_budget",
+    "manager_star_role_budget", "evaluation", "control", "execution"
+  ],
+  "properties": {
+    "schema_version": {"const": "exp3-e3v13-prospective-config-v1"},
+    "experiment_id": {"const": "E3V13"},
+    "study_id": {"const": "E3V13-T3-500k-item-save-architecture-comparison-v1"},
+    "freeze_status": {"enum": ["prospective_unready", "ready_for_freeze"]},
+    "task_id": {"const": "T3"},
+    "replicate_count": {"const": 5},
+    "arm_order": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["1", "2", "3", "4", "5"],
+      "properties": {
+        "1": {"$ref": "#/$defs/armOrder"},
+        "2": {"$ref": "#/$defs/armOrder"},
+        "3": {"$ref": "#/$defs/armOrder"},
+        "4": {"$ref": "#/$defs/armOrder"},
+        "5": {"$ref": "#/$defs/armOrder"}
+      }
+    },
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["M0", "M1"],
+      "properties": {
+        "M0": {"$ref": "#/$defs/condition"},
+        "M1": {"$ref": "#/$defs/condition"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "source_ref", "source_commit"],
+      "properties": {
+        "repository": {"const": "bankingscience/BSLAgenticQuantDevLoop"},
+        "source_ref": {"$ref": "#/$defs/nonempty"},
+        "source_commit": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_ref", "image_digest", "runtime_request_schema_sha256",
+        "runtime_response_schema_sha256", "tool_implementation_sha256",
+        "execution_control_sha256",
+        "model_visible_tool_fingerprint_sha256", "provider_identity_sha256",
+        "provider_mode", "provider_base_url", "model_alias"
+      ],
+      "properties": {
+        "image_ref": {"$ref": "#/$defs/nonempty"},
+        "image_digest": {
+          "oneOf": [
+            {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        },
+        "runtime_request_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "runtime_response_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "tool_implementation_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "execution_control_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "model_visible_tool_fingerprint_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "provider_identity_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "provider_mode": {"const": "openai"},
+        "provider_base_url": {"type": "string", "format": "uri"},
+        "model_alias": {"const": "gpt-5.6-terra"}
+      }
+    },
+    "task_suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version", "answer_capture_profile", "root", "task_path", "task_sha256", "rubric_path",
+        "rubric_sha256", "public_inputs", "item_submission_schema_path",
+        "item_submission_schema_sha256", "output_schema_path",
+        "output_schema_sha256", "scorer_result_schema_path",
+        "scorer_result_schema_sha256", "scorer_result_validator_path",
+        "scorer_result_validator_sha256", "required_item_count", "primary_outcome",
+        "missing_items_reduce_correct_items_out_of_25",
+        "missing_reported_separately_from_submitted_incorrect"
+      ],
+      "properties": {
+        "version": {"const": "t3-quant-suite-v2"},
+        "answer_capture_profile": {"const": "t3_item_results_v2"},
+        "root": {"const": "experiments/shared/t3-quant-suite-v2"},
+        "task_path": {"const": "experiments/shared/t3-quant-suite-v2/TASK.md"},
+        "task_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "rubric_path": {"const": "experiments/shared/t3-quant-suite-v2/RUBRIC.md"},
+        "rubric_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "public_inputs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/fileBinding"}
+        },
+        "item_submission_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/item_submission_schema_v2.json"},
+        "item_submission_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "output_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/output_schema_v1.json"},
+        "output_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "scorer_result_schema_path": {"const": "experiments/shared/t3-quant-suite-v2/scorer_result_schema_v2.json"},
+        "scorer_result_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "scorer_result_validator_path": {"const": "experiments/shared/t3-quant-suite-v2/scorer_result_validator.py"},
+        "scorer_result_validator_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "required_item_count": {"const": 25},
+        "primary_outcome": {"const": "correct_items_out_of_25"},
+        "missing_items_reduce_correct_items_out_of_25": {"const": true},
+        "missing_reported_separately_from_submitted_incorrect": {"const": true}
+      }
+    },
+    "tool_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calculation_tool", "calculation_request_schema_version",
+        "calculation_response_schema_version", "max_calculation_calls_per_attempt",
+        "partial_calculation_status", "partial_retention",
+        "partial_continuation_reference", "item_submission_tool",
+        "item_submission_request_schema_version", "nonempty_items_per_submission",
+        "save_timing", "write_mode", "normalization_policy", "checkpoint_tool",
+        "artifact_tool", "item_store_is_primary",
+        "same_model_visible_contract_for_both_arms",
+        "same_tool_caps_for_both_arms", "never_maps_results_to_item_ids"
+      ],
+      "properties": {
+        "calculation_tool": {"const": "quant_calculate"},
+        "calculation_request_schema_version": {"const": "quant-calculate-request-v2"},
+        "calculation_response_schema_version": {"const": "quant-calculate-mcp-response-v3"},
+        "max_calculation_calls_per_attempt": {"const": 4},
+        "partial_calculation_status": {"const": "partial"},
+        "partial_retention": {"const": "explicit_completed_return_ids_only"},
+        "partial_continuation_reference": {"const": "stored_ref"},
+        "item_submission_tool": {"const": "submit_t3_items"},
+        "item_submission_request_schema_version": {"const": "t3-quant-item-submission-v2"},
+        "nonempty_items_per_submission": {"const": 1},
+        "save_timing": {"const": "immediately_after_each_item_is_available"},
+        "write_mode": {"const": "atomic_per_item"},
+        "normalization_policy": {"const": "published_deterministic_v2_only"},
+        "checkpoint_tool": {"const": "submit_calculation_checkpoint"},
+        "artifact_tool": {"const": "commit_calculation_artifact"},
+        "item_store_is_primary": {"const": true},
+        "same_model_visible_contract_for_both_arms": {"const": true},
+        "same_tool_caps_for_both_arms": {"const": true},
+        "never_maps_results_to_item_ids": {"const": true}
+      }
+    },
+    "shared_budget": {"$ref": "#/$defs/sharedBudget"},
+    "manager_star_role_budget": {"$ref": "#/$defs/roleBudget"},
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_item_scorer_sha256", "private_base_scorer_sha256",
+        "evaluator_coordinator_sha256", "private_evaluator_manifest_sha256",
+        "visible_response_trace_schema_sha256", "item_store_projection_sha256"
+      ],
+      "properties": {
+        "private_item_scorer_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "private_base_scorer_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "evaluator_coordinator_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "private_evaluator_manifest_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "visible_response_trace_schema_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "item_store_projection_sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository", "control_ref", "control_commit",
+        "public_binding_inventory_sha256", "files_sha256",
+        "files_fingerprint_sha256"
+      ],
+      "properties": {
+        "repository": {"const": "bankingscience/BSLAgenticQuantDevLoop"},
+        "control_ref": {"$ref": "#/$defs/nonempty"},
+        "control_commit": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            {"$ref": "#/$defs/placeholder"}
+          ]
+        },
+        "public_binding_inventory_sha256": {"$ref": "#/$defs/hashOrPlaceholder"},
+        "files_sha256": {
+          "type": "object",
+          "propertyNames": {"type": "string", "minLength": 1},
+          "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "files_fingerprint_sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rag_enabled", "retrieval_context_included", "serial",
+        "observations_per_authorization", "advance_only_after_pair_audit",
+        "agreement_generation_enabled", "formal_model_execution_enabled"
+      ],
+      "properties": {
+        "rag_enabled": {"const": false},
+        "retrieval_context_included": {"const": false},
+        "serial": {"const": true},
+        "observations_per_authorization": {"const": 2},
+        "advance_only_after_pair_audit": {"const": true},
+        "agreement_generation_enabled": {"type": "boolean"},
+        "formal_model_execution_enabled": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "placeholder": {"type": "string", "pattern": "^__UNRESOLVED_[A-Z0-9_]+__$"},
+    "hashOrPlaceholder": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        {"$ref": "#/$defs/placeholder"}
+      ]
+    },
+    "nonempty": {"type": "string", "minLength": 1},
+    "armOrder": {
+      "type": "array",
+      "prefixItems": [{"enum": ["M0", "M1"]}, {"enum": ["M0", "M1"]}],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["architecture_mode", "role_topology"],
+      "properties": {
+        "architecture_mode": {"enum": ["single_agent", "manager_star"]},
+        "role_topology": {"enum": ["single_agent", "manager_star"]}
+      }
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nonempty"},
+        "sha256": {"$ref": "#/$defs/hashOrPlaceholder"}
+      }
+    },
+    "sharedBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts", "max_model_calls_per_attempt", "max_tokens_per_attempt",
+        "max_model_calls_per_observation", "max_tokens_per_observation",
+        "attempt_timeout_seconds", "observation_timeout_seconds", "cpu_vcpus",
+        "memory_mb", "pids_limit"
+      ],
+      "properties": {
+        "max_attempts": {"const": 2},
+        "max_model_calls_per_attempt": {"const": 20},
+        "max_tokens_per_attempt": {"const": 500000},
+        "max_model_calls_per_observation": {"const": 40},
+        "max_tokens_per_observation": {"const": 1000000},
+        "attempt_timeout_seconds": {"const": 1800},
+        "observation_timeout_seconds": {"const": 3600},
+        "cpu_vcpus": {"const": 2},
+        "memory_mb": {"const": 4096},
+        "pids_limit": {"const": 256}
+      }
+    },
+    "roleSlice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_calls", "max_tokens"],
+      "properties": {
+        "max_calls": {"type": "integer", "minimum": 1},
+        "max_tokens": {"const": 500000}
+      }
+    },
+    "roleBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manager", "architect", "developer", "unused_capacity_transferable",
+        "applies_per_attempt", "transfer_policy"
+      ],
+      "properties": {
+        "manager": {"$ref": "#/$defs/roleSlice"},
+        "architect": {"$ref": "#/$defs/roleSlice"},
+        "developer": {"$ref": "#/$defs/roleSlice"},
+        "unused_capacity_transferable": {"const": true},
+        "applies_per_attempt": {"const": true},
+        "transfer_policy": {"$ref": "#/$defs/callTransferPolicy"}
+      }
+    },
+    "callTransferPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_role", "recipient_role", "release_after",
+        "manager_final_review_call_reserved"
+      ],
+      "properties": {
+        "source_role": {"const": "architect"},
+        "recipient_role": {"const": "developer"},
+        "release_after": {"const": "validated_architect_handoff"},
+        "manager_final_review_call_reserved": {"const": true}
+      }
+    }
+  }
+}

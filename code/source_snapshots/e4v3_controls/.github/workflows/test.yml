@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rae-runtime:
+    name: rae_runtime tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r rae_runtime/sandbox/requirements.txt
+          pip install -r rae_runtime/sandbox/tests/requirements-dev.txt
+
+      - name: Run tests
+        run: |
+          pytest rae_runtime/ \
+            --ignore=rae_runtime/proxy/tests/test_pipeline_parity.py \
+            --ignore=rae_runtime/proxy/tests/test_github_mcp.py
+
+  jira-chatops-gateway:
+    name: jira-chatops-gateway tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r jira-chatops-gateway/requirements.txt
+
+      - name: Run tests
+        run: pytest jira-chatops-gateway/

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/t3-quant-scorer-result-v2.schema.json",
+  "title": "T3 Quant Answer-Blind Scorer Result v2",
+  "description": "Public result structure for 25-item T3 scoring. It records coverage, workflow state and correctness only; it never contains candidate values or expected answers. Cross-field partition rules are enforced by scorer_result_validator.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "total_items",
+    "correct_items",
+    "submitted_item_ids",
+    "missing_item_ids",
+    "submitted_incorrect_item_ids",
+    "item_results"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "t3-quant-scorer-result-v2"
+    },
+    "total_items": {
+      "const": 25
+    },
+    "correct_items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 25
+    },
+    "submitted_item_ids": {
+      "$ref": "#/$defs/itemIdList",
+      "description": "All item IDs with an accepted, structurally scorable candidate, regardless of mathematical correctness. Together with missing_item_ids this is a disjoint partition of 1 through 25."
+    },
+    "missing_item_ids": {
+      "$ref": "#/$defs/itemIdList",
+      "description": "All item IDs without an accepted, structurally scorable candidate. Together with submitted_item_ids this is a disjoint partition of 1 through 25."
+    },
+    "submitted_incorrect_item_ids": {
+      "$ref": "#/$defs/itemIdList",
+      "description": "The mathematically incorrect subset of submitted_item_ids. It is disjoint from the accepted item rows whose correct field is true; those two subsets together equal submitted_item_ids."
+    },
+    "item_results": {
+      "type": "array",
+      "minItems": 25,
+      "maxItems": 25,
+      "items": {
+        "$ref": "#/$defs/itemResult"
+      }
+    }
+  },
+  "$defs": {
+    "itemId": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25
+    },
+    "itemIdList": {
+      "type": "array",
+      "maxItems": 25,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/itemId"
+      }
+    },
+    "itemResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "submission_state",
+        "correct"
+      ],
+      "properties": {
+        "item_id": {
+          "$ref": "#/$defs/itemId"
+        },
+        "submission_state": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "invalid_format",
+            "explicit_abstain",
+            "tool_failure",
+            "not_attempted"
+          ],
+          "description": "accepted means a structurally scorable candidate was preserved; it does not mean the mathematics is correct. Every other state means no scorable candidate was preserved for this item."
+        },
+        "correct": {
+          "type": "boolean",
+          "description": "Mathematical/date correctness. This may be true only when submission_state is accepted."
+        }
+      }
+    }
+  }
+}

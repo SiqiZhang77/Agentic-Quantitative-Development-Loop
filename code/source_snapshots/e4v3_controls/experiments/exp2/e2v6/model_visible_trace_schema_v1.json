@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/model-visible-trace-v1.json",
+  "title": "Model-visible transcript record",
+  "description": "One redacted JSONL record of content the model returned or a tool exchange it explicitly requested. This schema excludes prompts, hidden reasoning, evaluator data and secrets.",
+  "oneOf": [
+    {"$ref": "#/$defs/outputRecord"},
+    {"$ref": "#/$defs/toolRecord"}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "safeName": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "attempt": {"type": ["integer", "null"], "enum": [1, 2, null]},
+    "outputRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "architecture_mode", "role", "phase", "attempt", "output_sha256", "output_char_count", "output"],
+      "properties": {
+        "schema_version": {"const": "model-visible-transcript-v1"},
+        "record_type": {"const": "model_visible_output"},
+        "architecture_mode": {"$ref": "#/$defs/safeName"},
+        "role": {"$ref": "#/$defs/safeName"},
+        "phase": {"$ref": "#/$defs/safeName"},
+        "attempt": {"$ref": "#/$defs/attempt"},
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "output_char_count": {"type": "integer", "minimum": 0},
+        "output": {}
+      }
+    },
+    "toolRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "architecture_mode", "role", "tool", "attempt", "exchange_sha256", "arguments", "result"],
+      "properties": {
+        "schema_version": {"const": "model-visible-transcript-v1"},
+        "record_type": {"const": "model_visible_tool_call"},
+        "architecture_mode": {"$ref": "#/$defs/safeName"},
+        "role": {"$ref": "#/$defs/safeName"},
+        "tool": {"$ref": "#/$defs/safeName"},
+        "attempt": {"$ref": "#/$defs/attempt"},
+        "exchange_sha256": {"$ref": "#/$defs/sha256"},
+        "arguments": {},
+        "result": {}
+      }
+    }
+  }
+}

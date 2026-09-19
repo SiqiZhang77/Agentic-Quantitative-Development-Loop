@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-46_20260618_002",
+  "execution_summary": {
+    "ticket_id": "SCRUM-46",
+    "status": "failed",
+    "request_type": "backtest",
+    "start_time": "2026-06-18T11:00:00Z",
+    "end_time": "2026-06-18T11:05:00Z",
+    "iteration_traces": [
+      {
+        "iteration": 1,
+        "agent": "planner_agent",
+        "tool_call": "parse_execution_objectives",
+        "status": "succeeded",
+        "message": "Parsed the requested backtest objective.",
+        "timestamp": "2026-06-18T11:01:00Z"
+      },
+      {
+        "iteration": 2,
+        "agent": "backtest_agent",
+        "tool_call": "run_backtest",
+        "status": "failed",
+        "message": "Backtest failed because the strategy file could not be compiled.",
+        "timestamp": "2026-06-18T11:04:00Z"
+      }
+    ]
+  },
+  "performance_metrics": null,
+  "generated_artifacts": {
+    "modified_files": [],
+    "new_files": [],
+    "backtest_plots_path": null,
+    "branch_name": null
+  },
+  "diagnostics": {
+    "error_code": "STRATEGY_COMPILE_ERROR",
+    "error_message": "Strategy file failed to compile during the backtest run.",
+    "raw_log_reference": "/workspace/output/artifacts/run.log"
+  },
+  "telemetry": {
+    "execution_time_seconds": 300.2,
+    "container_exit_code": 1,
+    "retry_count": 0,
+    "model_usage": [],
+    "stage_timings": [],
+    "audit_trace": null
+  },
+  "evaluation": {
+    "met_criteria": null,
+    "confidence": 0.0,
+    "criteria_results": [],
+    "unrecognised_criteria": [],
+    "summary": "Run did not reach succeeded status; no criteria were scored."
+  },
+  "recommended_action": "escalate"
+}

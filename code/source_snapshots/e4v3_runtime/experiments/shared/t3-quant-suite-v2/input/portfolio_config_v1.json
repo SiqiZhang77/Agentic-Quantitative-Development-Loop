@@ -1,0 +1,21 @@
+{
+  "schema_version": "t3-quant-portfolio-config-v1",
+  "dataset_id": "synthetic-portfolio-returns-v1",
+  "observation_count": 120,
+  "annualization_periods": 252,
+  "initial_wealth": 1.0,
+  "target_weights": {
+    "asset_a": 0.5,
+    "asset_b": 0.3,
+    "asset_c": 0.2
+  },
+  "rebalance_dates": [
+    "2025-01-29",
+    "2025-02-26",
+    "2025-03-26",
+    "2025-04-23",
+    "2025-05-21",
+    "2025-06-18"
+  ],
+  "transaction_cost_bps": 8.0
+}

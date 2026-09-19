@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs and dev tooling — don't bake these into the image
+README.md
+docker-compose.yml
+Makefile
+docs/
+tests/

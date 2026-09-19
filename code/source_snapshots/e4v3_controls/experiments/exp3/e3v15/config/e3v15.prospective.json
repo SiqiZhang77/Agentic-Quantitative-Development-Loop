@@ -1,0 +1,145 @@
+{
+  "schema_version": "exp3-e3v15-prospective-config-v1",
+  "experiment_id": "E3V15",
+  "study_id": "E3V15-T3-500k-item-save-architecture-comparison-v1",
+  "freeze_status": "prospective_unready",
+  "task_id": "T3",
+  "replicate_count": 5,
+  "arm_order": {
+    "1": ["M0", "M1"],
+    "2": ["M1", "M0"],
+    "3": ["M0", "M1"],
+    "4": ["M1", "M0"],
+    "5": ["M0", "M1"]
+  },
+  "conditions": {
+    "M0": {
+      "architecture_mode": "single_agent",
+      "role_topology": "single_agent"
+    },
+    "M1": {
+      "architecture_mode": "manager_star",
+      "role_topology": "manager_star"
+    }
+  },
+  "source": {
+    "repository": "bankingscience/BSLAgenticQuantDevLoop",
+    "source_ref": "__UNRESOLVED_E3V15_SOURCE_REF__",
+    "source_commit": "__UNRESOLVED_E3V15_SOURCE_COMMIT_SHA__"
+  },
+  "runtime": {
+    "image_ref": "__UNRESOLVED_E3V15_IMAGE_REF__",
+    "image_digest": "__UNRESOLVED_E3V15_IMAGE_DIGEST__",
+    "runtime_request_schema_sha256": "__UNRESOLVED_RUNTIME_REQUEST_SCHEMA_SHA256__",
+    "runtime_response_schema_sha256": "__UNRESOLVED_RUNTIME_RESPONSE_SCHEMA_SHA256__",
+    "tool_implementation_sha256": "__UNRESOLVED_TOOL_IMPLEMENTATION_SHA256__",
+    "execution_control_sha256": "__UNRESOLVED_E3V15_EXECUTION_CONTROL_SHA256__",
+    "model_visible_tool_fingerprint_sha256": "__UNRESOLVED_MODEL_VISIBLE_TOOL_FINGERPRINT_SHA256__",
+    "provider_identity_sha256": "__UNRESOLVED_PROVIDER_IDENTITY_SHA256__",
+    "provider_mode": "openai",
+    "provider_base_url": "https://api.openai.com/v1",
+    "model_alias": "gpt-5.6-terra"
+  },
+  "task_suite": {
+    "version": "t3-quant-suite-v2",
+    "answer_capture_profile": "t3_item_results_v2",
+    "root": "experiments/shared/t3-quant-suite-v2",
+    "task_path": "experiments/shared/t3-quant-suite-v2/TASK.md",
+    "task_sha256": "__UNRESOLVED_T3_V2_TASK_SHA256__",
+    "rubric_path": "experiments/shared/t3-quant-suite-v2/RUBRIC.md",
+    "rubric_sha256": "__UNRESOLVED_T3_V2_RUBRIC_SHA256__",
+    "public_inputs": [
+      {
+        "path": "experiments/shared/t3-quant-suite-v2/input/synthetic_portfolio_returns_v1.csv",
+        "sha256": "__UNRESOLVED_T3_V2_RETURNS_SHA256__"
+      },
+      {
+        "path": "experiments/shared/t3-quant-suite-v2/input/portfolio_config_v1.json",
+        "sha256": "__UNRESOLVED_T3_V2_CONFIG_SHA256__"
+      }
+    ],
+    "item_submission_schema_path": "experiments/shared/t3-quant-suite-v2/item_submission_schema_v2.json",
+    "item_submission_schema_sha256": "__UNRESOLVED_T3_V2_ITEM_SCHEMA_SHA256__",
+    "output_schema_path": "experiments/shared/t3-quant-suite-v2/output_schema_v1.json",
+    "output_schema_sha256": "__UNRESOLVED_T3_V2_OUTPUT_SCHEMA_SHA256__",
+    "scorer_result_schema_path": "experiments/shared/t3-quant-suite-v2/scorer_result_schema_v2.json",
+    "scorer_result_schema_sha256": "__UNRESOLVED_T3_V2_SCORER_RESULT_SCHEMA_SHA256__",
+    "scorer_result_validator_path": "experiments/shared/t3-quant-suite-v2/scorer_result_validator.py",
+    "scorer_result_validator_sha256": "__UNRESOLVED_T3_V2_SCORER_RESULT_VALIDATOR_SHA256__",
+    "required_item_count": 25,
+    "primary_outcome": "correct_items_out_of_25",
+    "missing_items_reduce_correct_items_out_of_25": true,
+    "missing_reported_separately_from_submitted_incorrect": true
+  },
+  "tool_contract": {
+    "calculation_tool": "quant_calculate",
+    "calculation_request_schema_version": "quant-calculate-request-v2",
+    "calculation_response_schema_version": "quant-calculate-mcp-response-v3",
+    "max_calculation_calls_per_attempt": 4,
+    "partial_calculation_status": "partial",
+    "partial_retention": "explicit_completed_return_ids_only",
+    "partial_continuation_reference": "stored_ref",
+    "item_submission_tool": "submit_t3_items",
+    "item_submission_request_schema_version": "t3-quant-item-submission-v2",
+    "nonempty_items_per_submission": 1,
+    "save_timing": "immediately_after_each_item_is_available",
+    "write_mode": "atomic_per_item",
+    "normalization_policy": "published_deterministic_v2_only",
+    "checkpoint_tool": "submit_calculation_checkpoint",
+    "artifact_tool": "commit_calculation_artifact",
+    "item_store_is_primary": true,
+    "same_model_visible_contract_for_both_arms": true,
+    "same_tool_caps_for_both_arms": true,
+    "never_maps_results_to_item_ids": true
+  },
+  "shared_budget": {
+    "max_attempts": 2,
+    "max_model_calls_per_attempt": 20,
+    "max_tokens_per_attempt": 500000,
+    "max_model_calls_per_observation": 40,
+    "max_tokens_per_observation": 1000000,
+    "attempt_timeout_seconds": 1800,
+    "observation_timeout_seconds": 3600,
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "pids_limit": 256
+  },
+  "manager_star_role_budget": {
+    "manager": {"max_calls": 3, "max_tokens": 500000},
+    "architect": {"max_calls": 3, "max_tokens": 500000},
+    "developer": {"max_calls": 14, "max_tokens": 500000},
+    "unused_capacity_transferable": true,
+    "applies_per_attempt": true,
+    "transfer_policy": {
+      "source_role": "architect",
+      "recipient_role": "developer",
+      "release_after": "validated_architect_handoff",
+      "manager_final_review_call_reserved": true
+    }
+  },
+  "evaluation": {
+    "private_item_scorer_sha256": "__UNRESOLVED_E3V15_PRIVATE_ITEM_SCORER_SHA256__",
+    "private_base_scorer_sha256": "__UNRESOLVED_E3V15_PRIVATE_BASE_SCORER_SHA256__",
+    "evaluator_coordinator_sha256": "__UNRESOLVED_E3V15_EVALUATOR_COORDINATOR_SHA256__",
+    "private_evaluator_manifest_sha256": "__UNRESOLVED_E3V15_PRIVATE_EVALUATOR_MANIFEST_SHA256__",
+    "visible_response_trace_schema_sha256": "__UNRESOLVED_VISIBLE_RESPONSE_TRACE_SCHEMA_SHA256__",
+    "item_store_projection_sha256": "__UNRESOLVED_E3V15_ITEM_STORE_PROJECTION_SHA256__"
+  },
+  "control": {
+    "repository": "bankingscience/BSLAgenticQuantDevLoop",
+    "control_ref": "__UNRESOLVED_E3V15_CONTROL_REF__",
+    "control_commit": "__UNRESOLVED_E3V15_CONTROL_COMMIT_SHA__",
+    "public_binding_inventory_sha256": "__UNRESOLVED_E3V15_PUBLIC_BINDING_INVENTORY_SHA256__",
+    "files_sha256": {},
+    "files_fingerprint_sha256": "__UNRESOLVED_E3V15_CONTROL_FILES_FINGERPRINT_SHA256__"
+  },
+  "execution": {
+    "rag_enabled": false,
+    "retrieval_context_included": false,
+    "serial": true,
+    "observations_per_authorization": 2,
+    "advance_only_after_pair_audit": true,
+    "agreement_generation_enabled": false,
+    "formal_model_execution_enabled": false
+  }
+}

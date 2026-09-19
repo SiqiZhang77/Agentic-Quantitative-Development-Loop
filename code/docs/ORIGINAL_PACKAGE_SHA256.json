@@ -1,0 +1,28 @@
+{
+  "algorithm": "sha256",
+  "scope": "all packaged code files except this inventory itself; newly generated outputs and extracted files are not part of this inventory",
+  "files": {
+    "README.md": "7992ac7400a431ce75a8d74a94a7eb43ac23a46e4a7d938e46c4980ef2376261",
+    "SOURCE_MANIFEST.json": "7a89c62dbf83262dcae3727cdb94a411ff1cccf3ee28c31d11b6a146f80bb66d",
+    "analysis/DATA_PROVENANCE.json": "52aa6db346568ce344672b85168e334ca16cb95e05d5a2121ffa71841899ea0f",
+    "analysis/README.md": "276d71fd270b472740fac46c1811658c602a38fb2cfe34cf78fdf3e367a3b3ba",
+    "analysis/data/relevance_grades.csv": "2b41cbe8f5c1b04a1e5450bc363ee724bff3ac04d1e2639f369472af3ccda5f2",
+    "analysis/data/retrieval_metrics.csv": "99d726e6ff97b53d50193272d43194e3b2eea6419d1b52a312ba2dd5fec8470f",
+    "analysis/data/t12_scores.csv": "65e9b027ea0124e417c132fcc223420697e636641cf6f8eea4658e811a9564be",
+    "analysis/data/t3_items.csv": "80d52c180130c883facf444fb60214963e9155d440437712165f819de13450a5",
+    "analysis/data/t3_resources.csv": "b351e6d4bb7a5a38ccef8fcf4adae764b792e65285df7d56e62ff93343b07876",
+    "analysis/data/t3_runs.csv": "d4717c1bde0dc686c01fe9fff48bd470cfdceacd09aa83f159074cb49fb26e13",
+    "analysis/reproduce_summaries.py": "e1ba831cfab0308ada37d1470d78ee6b923291c7c5aec15cb9bf2f6f39fadcc4",
+    "docs/PACKAGING_DECISIONS.md": "a1843bfeb15f876c2a3ac86481138cf0d7d66198b735df9ff15e280d2ab09776",
+    "docs/VALIDATION.md": "c70c1407c8b0028c641330ba171a2fba0e27ecbf58b0c4e4af6ce7ad8d97fb2b",
+    "source_archives/e2t12v2_controls.zip": "e4d3e73ba1eba9e561b2aef733a715fd5c787c63497505cdf6f2dd3406440809",
+    "source_archives/e2t12v2_runtime.zip": "75345af4bc216aeea2d3e47ae72c3d76ecaf1deeef976b777b31b5a7ed3bdad6",
+    "source_archives/e2t12v3_runtime.zip": "6cdd0199ef6db9e688d0ff14d9fef5e605cc85f0b147e43f5e1f3b4d60ec9c06",
+    "source_archives/e3v2_runtime.zip": "66e1e21e4544609a552675016c89a5a329d469dd56fec17a048b2ac052218bb7",
+    "source_archives/e4v3_controls.zip": "0c68fe1eb49fa425b69997999e68eec13c93901c65edc3ae2e4f4542fa8b080e",
+    "source_archives/e4v3_runtime.zip": "ba418755696f2d698a2c85071f081accb223e30fbcadbe43635908e661f4f1c2",
+    "tools/requirements-offline.txt": "1dc2a841766cf2b5c1390640f5e3f98fd58e513990885e94fd17c6aa53d4cd7b",
+    "tools/run_offline_tests.py": "44805ee95a20fbc8ee8b75a513ec8ed0b42b24af1400b5327517822ad0e330b5",
+    "tools/verify_and_extract.py": "215f4e7da5c7815ae27bddefc85873b9bca139347217f6da940bd95922df2f14"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "architecture_mode": "manager_star",
+  "execution_objectives": {
+    "parsed_task_parameters": {
+      "model": "gpt-5.6-terra",
+      "provider_base_url": "https://api.openai.com/v1",
+      "provider_identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+      "provider_mode": "openai",
+      "rag_enabled": false
+    },
+    "resource_path": "rae_runtime/proxy/budget_guard.py",
+    "strategy_type": "other",
+    "system_instruction_override": null,
+    "target_date_range": {},
+    "target_path": "rae_runtime/proxy/budget_guard.py"
+  },
+  "iteration_controls": {
+    "allow_iteration": false,
+    "max_agent_turns": 15,
+    "max_failed_iterations": 1,
+    "max_iterations": 1,
+    "max_token_budget_per_run": 200000,
+    "timeout_seconds": 1800
+  },
+  "jira_metadata": {
+    "current_status": "Approved local formal execution",
+    "description": "Add a small clock abstraction to rae_runtime/proxy/budget_guard.py while preserving every existing budget and usage behaviour.\nDefine an abstract MonotonicClock interface with a typed now() -> float method.\nDefine a concrete SystemMonotonicClock that is instantiable without arguments, explicitly overrides now(), and delegates to time.monotonic().\nAdd an optional keyword-only clock dependency to BudgetGuard.__init__; the default must use SystemMonotonicClock, while a supplied MonotonicClock is used for the start time and every later timeout check.\nPreserve the existing strict greater-than timeout boundary, token-budget and iteration limits, usage and cost accounting, exception classes, and existing constructor calls.\nAdd useful Python documentation and types for the public clock classes and methods, and add focused deterministic tests in rae_runtime/sandbox/tests/test_idempotency.py using a controllable fake clock.\nDo not add wall-clock sleeps, duplicate budget logic, modify RAG or deployment behaviour, or change backtest, HDFS, YARN, schema, or strategy-request logic.\nModify only rae_runtime/proxy/budget_guard.py and rae_runtime/sandbox/tests/test_idempotency.py.",
+    "events_history": [
+      {
+        "author": "experiment-operator",
+        "event_type": "comment",
+        "text": "Add a small clock abstraction to rae_runtime/proxy/budget_guard.py while preserving every existing budget and usage behaviour.\nDefine an abstract MonotonicClock interface with a typed now() -> float method.\nDefine a concrete SystemMonotonicClock that is instantiable without arguments, explicitly overrides now(), and delegates to time.monotonic().\nAdd an optional keyword-only clock dependency to BudgetGuard.__init__; the default must use SystemMonotonicClock, while a supplied MonotonicClock is used for the start time and every later timeout check.\nPreserve the existing strict greater-than timeout boundary, token-budget and iteration limits, usage and cost accounting, exception classes, and existing constructor calls.\nAdd useful Python documentation and types for the public clock classes and methods, and add focused deterministic tests in rae_runtime/sandbox/tests/test_idempotency.py using a controllable fake clock.\nDo not add wall-clock sleeps, duplicate budget logic, modify RAG or deployment behaviour, or change backtest, HDFS, YARN, schema, or strategy-request logic.\nModify only rae_runtime/proxy/budget_guard.py and rae_runtime/sandbox/tests/test_idempotency.py.",
+        "timestamp": "2026-08-26T00:00:00+00:00"
+      }
+    ],
+    "summary": "Experiment 3 T2 replicate 3",
+    "ticket_id": "E3-011",
+    "triggering_comment": {
+      "author": "experiment-operator",
+      "comment_id": "E3-T2-R3-M1",
+      "text": "Add a small clock abstraction to rae_runtime/proxy/budget_guard.py while preserving every existing budget and usage behaviour.\nDefine an abstract MonotonicClock interface with a typed now() -> float method.\nDefine a concrete SystemMonotonicClock that is instantiable without arguments, explicitly overrides now(), and delegates to time.monotonic().\nAdd an optional keyword-only clock dependency to BudgetGuard.__init__; the default must use SystemMonotonicClock, while a supplied MonotonicClock is used for the start time and every later timeout check.\nPreserve the existing strict greater-than timeout boundary, token-budget and iteration limits, usage and cost accounting, exception classes, and existing constructor calls.\nAdd useful Python documentation and types for the public clock classes and methods, and add focused deterministic tests in rae_runtime/sandbox/tests/test_idempotency.py using a controllable fake clock.\nDo not add wall-clock sleeps, duplicate budget logic, modify RAG or deployment behaviour, or change backtest, HDFS, YARN, schema, or strategy-request logic.\nModify only rae_runtime/proxy/budget_guard.py and rae_runtime/sandbox/tests/test_idempotency.py.",
+      "timestamp": "2026-08-26T00:00:00+00:00"
+    }
+  },
+  "output_paths": {
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl",
+    "result_path": "/workspace/output/result.json"
+  },
+  "repository_details": [
+    {
+      "alias": "BSLAgenticQuantDevLoop",
+      "allowed_directories": [
+        "rae_runtime/proxy",
+        "rae_runtime/sandbox/tests"
+      ],
+      "clone_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop.git",
+      "repo_full_name": "bankingscience/BSLAgenticQuantDevLoop",
+      "runtime_role": "default",
+      "source_branch": "exp3/terra-source-v6",
+      "target_branch": "quant/E3-T2-R3-M1"
+    }
+  ],
+  "resource_requirements": {
+    "cpu_vcpus": 2,
+    "execution_timeout_seconds": 2100,
+    "gpu_count": 0,
+    "memory_mb": 4096,
+    "pids_limit": 256
+  },
+  "run_id": "E3-T2-R3-M1",
+  "schema_version": "1.0"
+}

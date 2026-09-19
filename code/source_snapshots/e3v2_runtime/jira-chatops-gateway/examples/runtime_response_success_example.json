@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-46_20260618_001",
+  "execution_summary": {
+    "ticket_id": "SCRUM-46",
+    "status": "succeeded",
+    "request_type": "backtest",
+    "start_time": "2026-06-18T10:31:00Z",
+    "end_time": "2026-06-18T10:45:00Z",
+    "iteration_traces": [
+      {
+        "iteration": 1,
+        "agent": "planner_agent",
+        "tool_call": "parse_execution_objectives",
+        "status": "succeeded",
+        "message": "Parsed the requested momentum backtest objective.",
+        "timestamp": "2026-06-18T10:32:00Z"
+      },
+      {
+        "iteration": 2,
+        "agent": "backtest_agent",
+        "tool_call": "run_backtest",
+        "status": "succeeded",
+        "message": "Backtest completed successfully for AAPL momentum strategy.",
+        "timestamp": "2026-06-18T10:40:00Z"
+      }
+    ]
+  },
+  "performance_metrics": {
+    "total_return": 0.45,
+    "sharpe_ratio": 1.2,
+    "max_drawdown": -0.08,
+    "alpha": 0.03,
+    "beta": 1.1,
+    "time_series_data_path": "/workspace/output/artifacts/equity_curve.csv"
+  },
+  "generated_artifacts": {
+    "modified_files": [
+      "src/strategies/momentum.py"
+    ],
+    "new_files": [
+      "reports/backtest_report.html"
+    ],
+    "backtest_plots_path": "/workspace/output/artifacts/equity_curve.png",
+    "branch_name": "quant/SCRUM-46",
+    "repository_branches": [
+      {
+        "alias": "BSLAgenticQuantDevLoop",
+        "repo_full_name": "bankingscience/BSLAgenticQuantDevLoop",
+        "source_branch": "main",
+        "target_branch": "quant/SCRUM-46",
+        "branch_action": "created",
+        "commit_sha": "abcdef1234567890abcdef1234567890abcdef12",
+        "modified_files": [
+          "src/strategies/momentum.py"
+        ],
+        "new_files": [
+          "reports/backtest_report.html"
+        ]
+      }
+    ]
+  },
+  "diagnostics": {
+    "error_code": null,
+    "error_message": null,
+    "raw_log_reference": "/workspace/output/artifacts/run.log"
+  },
+  "telemetry": {
+    "execution_time_seconds": 840.0,
+    "container_exit_code": 0,
+    "retry_count": 1,
+    "model_usage": [
+      {
+        "model_name": "nova-micro",
+        "provider": "litellm",
+        "prompt_tokens": 12480,
+        "completion_tokens": 2310,
+        "total_tokens": 14790
+      }
+    ],
+    "stage_timings": [
+      {
+        "stage": "load_request",
+        "duration_seconds": 0.4
+      },
+      {
+        "stage": "agent_loop",
+        "duration_seconds": 612.8
+      },
+      {
+        "stage": "backtest",
+        "duration_seconds": 226.8
+      }
+    ],
+    "audit_trace": [
+      {
+        "summary": "Ran the backtest and recorded generated artifact paths."
+      }
+    ]
+  },
+  "evaluation": {
+    "met_criteria": true,
+    "confidence": 1.0,
+    "criteria_results": [
+      {
+        "criterion": "min_sharpe_ratio",
+        "metric": "sharpe_ratio",
+        "threshold": 1.0,
+        "actual": 1.2,
+        "passed": true
+      },
+      {
+        "criterion": "max_drawdown",
+        "metric": "max_drawdown",
+        "threshold": -0.15,
+        "actual": -0.08,
+        "passed": true
+      }
+    ],
+    "unrecognised_criteria": [],
+    "summary": "All 2 target criteria met."
+  },
+  "recommended_action": "accept"
+}

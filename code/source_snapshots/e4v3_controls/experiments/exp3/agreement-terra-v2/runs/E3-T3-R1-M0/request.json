@@ -1,0 +1,73 @@
+{
+  "architecture_mode": "single_agent",
+  "execution_objectives": {
+    "parsed_task_parameters": {
+      "model": "gpt-5.6-terra",
+      "provider_base_url": "https://api.openai.com/v1",
+      "provider_identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+      "provider_mode": "openai",
+      "rag_enabled": false
+    },
+    "resource_path": "experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv",
+    "strategy_type": "other",
+    "system_instruction_override": null,
+    "target_date_range": {},
+    "target_path": "experiments/exp2/formal-v2/submissions/cumulative_returns.json"
+  },
+  "iteration_controls": {
+    "allow_iteration": false,
+    "max_agent_turns": 15,
+    "max_failed_iterations": 1,
+    "max_iterations": 1,
+    "max_token_budget_per_run": 200000,
+    "timeout_seconds": 1800
+  },
+  "jira_metadata": {
+    "current_status": "Approved local formal execution",
+    "description": "Read experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv and create experiments/exp2/formal-v2/submissions/cumulative_returns.json.\nFor every date, calculate the geometric cumulative return from an initial wealth of 1 for Asset A, Asset B, and an equal-weight daily-rebalanced portfolio whose daily return is the arithmetic mean of the two asset returns for that date.\nPreserve input date order and use the formula that compounds one plus each successive return before subtracting one.\nThe JSON object must contain \"method\": \"geometric_compounding\" plus a rows array. Each row must contain date, asset_a_cumulative_return, asset_b_cumulative_return, and equal_weight_cumulative_return as JSON numbers.\nKeep enough numerical precision for an absolute verification tolerance of 1e-10.\nDo not run a backtest, optimize a strategy, change the input CSV, or modify runtime, deployment, RAG, HDFS, YARN, or strategy-request code.\nThe only changed path must be experiments/exp2/formal-v2/submissions/cumulative_returns.json.",
+    "events_history": [
+      {
+        "author": "experiment-operator",
+        "event_type": "comment",
+        "text": "Read experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv and create experiments/exp2/formal-v2/submissions/cumulative_returns.json.\nFor every date, calculate the geometric cumulative return from an initial wealth of 1 for Asset A, Asset B, and an equal-weight daily-rebalanced portfolio whose daily return is the arithmetic mean of the two asset returns for that date.\nPreserve input date order and use the formula that compounds one plus each successive return before subtracting one.\nThe JSON object must contain \"method\": \"geometric_compounding\" plus a rows array. Each row must contain date, asset_a_cumulative_return, asset_b_cumulative_return, and equal_weight_cumulative_return as JSON numbers.\nKeep enough numerical precision for an absolute verification tolerance of 1e-10.\nDo not run a backtest, optimize a strategy, change the input CSV, or modify runtime, deployment, RAG, HDFS, YARN, or strategy-request code.\nThe only changed path must be experiments/exp2/formal-v2/submissions/cumulative_returns.json.",
+        "timestamp": "2026-08-26T00:00:00+00:00"
+      }
+    ],
+    "summary": "Experiment 3 T3 replicate 1",
+    "ticket_id": "E3-007",
+    "triggering_comment": {
+      "author": "experiment-operator",
+      "comment_id": "E3-T3-R1-M0",
+      "text": "Read experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv and create experiments/exp2/formal-v2/submissions/cumulative_returns.json.\nFor every date, calculate the geometric cumulative return from an initial wealth of 1 for Asset A, Asset B, and an equal-weight daily-rebalanced portfolio whose daily return is the arithmetic mean of the two asset returns for that date.\nPreserve input date order and use the formula that compounds one plus each successive return before subtracting one.\nThe JSON object must contain \"method\": \"geometric_compounding\" plus a rows array. Each row must contain date, asset_a_cumulative_return, asset_b_cumulative_return, and equal_weight_cumulative_return as JSON numbers.\nKeep enough numerical precision for an absolute verification tolerance of 1e-10.\nDo not run a backtest, optimize a strategy, change the input CSV, or modify runtime, deployment, RAG, HDFS, YARN, or strategy-request code.\nThe only changed path must be experiments/exp2/formal-v2/submissions/cumulative_returns.json.",
+      "timestamp": "2026-08-26T00:00:00+00:00"
+    }
+  },
+  "output_paths": {
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl",
+    "result_path": "/workspace/output/result.json"
+  },
+  "repository_details": [
+    {
+      "alias": "BSLAgenticQuantDevLoop",
+      "allowed_directories": [
+        "experiments/exp2/formal-v2/task_inputs",
+        "experiments/exp2/formal-v2/submissions"
+      ],
+      "clone_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop.git",
+      "repo_full_name": "bankingscience/BSLAgenticQuantDevLoop",
+      "runtime_role": "default",
+      "source_branch": "exp3/terra-source-v7",
+      "target_branch": "quant/E3V2-T3-R1-M0"
+    }
+  ],
+  "resource_requirements": {
+    "cpu_vcpus": 2,
+    "execution_timeout_seconds": 2100,
+    "gpu_count": 0,
+    "memory_mb": 4096,
+    "pids_limit": 256
+  },
+  "run_id": "E3-T3-R1-M0",
+  "schema_version": "1.0"
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_SCRUM-52_20260618_001",
+  "repository_details": [
+    {
+      "clone_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop.git",
+      "target_branch": "quant/SCRUM-52",
+      "allowed_directories": [
+        "src/data"
+      ]
+    }
+  ],
+  "jira_metadata": {
+    "ticket_id": "SCRUM-52",
+    "current_status": "In Progress",
+    "summary": "Split the data loader into smaller functions",
+    "description": "Refactor src/data/loader.py so ingestion and parsing are separate functions. No backtest is needed for this ticket.",
+    "triggering_comment": {
+      "comment_id": "10052",
+      "timestamp": "2026-06-18T13:55:00Z",
+      "author": "Example User",
+      "text": "/quant Refactor the data loader into smaller functions repo=bankingscience/BSLAgenticQuantDevLoop"
+    },
+    "events_history": [
+      {
+        "event_type": "comment",
+        "timestamp": "2026-06-18T13:55:00Z",
+        "author": "Example User",
+        "text": "/quant Refactor the data loader into smaller functions repo=bankingscience/BSLAgenticQuantDevLoop"
+      },
+      {
+        "event_type": "status_change",
+        "timestamp": "2026-06-18T13:56:00Z",
+        "author": "jira-automation",
+        "text": "Ticket moved from To Do to In Progress."
+      }
+    ]
+  },
+  "execution_objectives": {
+    "strategy_type": "refactor",
+    "stock_type": null,
+    "target_date_range": {},
+    "resource_path": "src/data/loader.py",
+    "target_path": "src/data/loader.py",
+    "system_instruction_override": null
+  },
+  "iteration_controls": {
+    "max_iterations": 3,
+    "max_failed_iterations": 1,
+    "max_commits_per_run": 20,
+    "timeout_seconds": 1800,
+    "max_token_budget_per_run": 50000
+  },
+  "resource_requirements": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "gpu_count": 0,
+    "execution_timeout_seconds": 1200,
+    "pids_limit": 256,
+    "yarn_queue": "root.default"
+  },
+  "output_paths": {
+    "result_path": "/workspace/output/result.json",
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl"
+  }
+}

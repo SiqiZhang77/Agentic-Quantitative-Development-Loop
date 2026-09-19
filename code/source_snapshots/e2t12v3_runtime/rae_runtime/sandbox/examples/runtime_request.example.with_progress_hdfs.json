@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run-001",
+  "repository_details": [
+    {
+      "clone_url": "https://github.com/bankingscience/example-repo.git",
+      "target_branch": "SCRUM-46",
+      "allowed_directories": [
+        "src",
+        "strategies"
+      ]
+    }
+  ],
+  "jira_metadata": {
+    "ticket_id": "SCRUM-46",
+    "current_status": "In Progress",
+    "summary": "Run standalone backtest and publish results",
+    "description": "Example request payload with progress JSONL and HDFS transfer enabled.",
+    "triggering_comment": {
+      "comment_id": "20001",
+      "timestamp": "2026-06-22T10:00:00+00:00",
+      "author": "example.user",
+      "text": "Please run the backtest and return the final HDFS path."
+    },
+    "events_history": [
+      {
+        "event_type": "comment",
+        "timestamp": "2026-06-22T10:00:00+00:00",
+        "author": "example.user",
+        "text": "Please run the backtest and return the final HDFS path."
+      }
+    ]
+  },
+  "execution_objectives": {
+    "strategy_type": "backtest",
+    "stock_type": null,
+    "target_date_range": {
+      "start_date": "2026-01-01",
+      "end_date": "2026-06-20"
+    },
+    "parsed_task_parameters": {
+      "mode": "backtest_only"
+    },
+    "system_instruction_override": null,
+    "resource_path": "strategies/example_strategy.py",
+    "zero_code_modifications": true
+  },
+  "iteration_controls": {
+    "max_iterations": 3,
+    "max_failed_iterations": 1,
+    "timeout_seconds": 5400,
+    "max_token_budget_per_run": 100000
+  },
+  "output_paths": {
+    "result_path": "/workspace/output/result.json",
+    "artifact_dir": "/workspace/output/artifacts",
+    "progress_events_path": "/workspace/output/progress_events.jsonl",
+    "hdfs_transfer": {
+      "enabled": true,
+      "source_login_node": "weles",
+      "compute_node": "amok",
+      "weles_forcluster_path": null,
+      "amok_landing_dir": "~/BacktestsLanding",
+      "hdfs_target_dir": "/shared/model-logs/2026-06-20_WaW_EU",
+      "verify_after_upload": true
+    }
+  }
+}

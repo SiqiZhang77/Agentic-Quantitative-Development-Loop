@@ -1,0 +1,6 @@
+Create a concise developer note at experiments/exp2/formal-v2/submissions/result_emission_analysis.md that explains the existing result-emission implementation in rae_runtime/sandbox/result_io.py.
+Explain the response_errors validation gate and minimal_failed_response fallback, compact JSON serialization, the named 4096-byte XCom budget and what the implementation actually measures, which field is shortened and how, the same-directory temporary-file plus os.replace write path, and the final stdout-line contract.
+For each major claim, cite the relevant function or symbol and distinguish verified code behaviour from any limitation or inference.
+Use clear headings and keep the note below 700 words.
+Do not modify runtime code, tests, deployment files, RAG behaviour, schemas, backtests, HDFS, YARN, or strategy-request logic.
+The only changed path must be experiments/exp2/formal-v2/submissions/result_emission_analysis.md.

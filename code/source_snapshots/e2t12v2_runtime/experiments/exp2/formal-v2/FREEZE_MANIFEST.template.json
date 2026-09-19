@@ -1,0 +1,131 @@
+{
+  "schema_version": "exp2-formal-v2-freeze-manifest-v1",
+  "experiment_id": "E2-formal-v2",
+  "protocol_version": "2.0.0-rc2",
+  "status": "draft_not_executable",
+  "approval": {
+    "decision": null,
+    "approver": null,
+    "approved_at_utc": null,
+    "protocol_sha256": null,
+    "rubric_sha256": null
+  },
+  "preserved_diagnostic_predecessor": {
+    "experiment_id": "exp2-v5-paired-smoke",
+    "manifest_sha256": "cb9664fbe5bd04c21785bce8cb80c45b342a23d9588e61c811f00d79da912958",
+    "included_in_formal_estimate": false
+  },
+  "source": {
+    "repository": "bankingscience/BSLAgenticQuantDevLoop",
+    "development_branch": "feature/exp2-rag-v1",
+    "frozen_source_branch": null,
+    "frozen_source_commit": null,
+    "remote_head_verified_at_utc": null,
+    "remote_head_evidence_sha256": null,
+    "source_checkout_clean_verified": false
+  },
+  "candidate_runtime": {
+    "airflow_dag_id": "jira_exp2_si_runner",
+    "airflow_revision": null,
+    "bundle_path": null,
+    "bundle_sha256": null,
+    "sandbox_image_digest": null,
+    "prompt_template_sha256": null,
+    "tool_policy_sha256": null,
+    "branch_scope_policy_sha256": null,
+    "branch_scope_policy_version": null,
+    "branch_scope_negative_preflight_sha256": null,
+    "xcom_recovery_validation_id": null
+  },
+  "model": {
+    "client_alias": "qwen3-coder",
+    "expected_underlying_model": "qwen.qwen3-coder-480b-a35b-v1:0",
+    "runtime_alias_mapping_verified": false,
+    "client_sampling_fields": {},
+    "proxy_sampling_defaults": "unknown",
+    "seed_support": "unknown",
+    "routing_and_fallbacks": "unknown",
+    "proxy_cache_status": "required_disabled",
+    "response_model_metadata_required": true,
+    "drift_policy": "invalidate run on unexpected observed model/deployment"
+  },
+  "rag": {
+    "index_id": "e2-jira-index-v1",
+    "index_sha256": "72786c237fb1912ebc03babc2aad571490f76cfadadd13e8593eedd45b5b2be1",
+    "corpus_id": null,
+    "corpus_sha256": null,
+    "cutoff_at_utc": "2026-08-09T11:05:50Z",
+    "exclusion_list_sha256": null,
+    "retriever": "jira_lexical_bm25",
+    "retriever_version": "1.1.0",
+    "top_k": 5,
+    "max_memories_per_source_ticket": 2,
+    "embedding_model": null,
+    "reranker": null
+  },
+  "design": {
+    "conditions": ["C0_no_rag", "C1_rag"],
+    "tasks": ["T1_result_emission_comprehension", "T2_monotonic_clock_design", "T3_cumulative_returns"],
+    "replicates_per_task_condition": 3,
+    "formal_run_count": 18,
+    "primary_outcome": "task_quality_score_0_to_10",
+    "allocation": {
+      "T1": ["C0-C1", "C1-C0", "C0-C1"],
+      "T2": ["C1-C0", "C0-C1", "C1-C0"],
+      "T3": ["C0-C1", "C1-C0", "C0-C1"]
+    },
+    "global_schedule_seed": "E2-formal-v2-block-order-v1",
+    "global_schedule_algorithm": "sha256_fixed_block_order_v1",
+    "global_block_order": ["T3-R2", "T2-R3", "T2-R2", "T3-R1", "T2-R1", "T1-R3", "T1-R2", "T3-R3", "T1-R1"],
+    "schedule_sha256": null,
+    "replacement_policy": {
+      "ordinary_replacements": 0,
+      "maximum_exceptional_paired_reruns": 1,
+      "used": 0
+    }
+  },
+  "tasks": {
+    "T1": {"prompt_sha256": null, "resource_sha256": null, "output_contract_sha256": null},
+    "T2": {"prompt_sha256": null, "resource_sha256": null, "output_contract_sha256": null},
+    "T3": {"prompt_sha256": null, "input_sha256": null, "output_contract_sha256": null}
+  },
+  "hidden_evaluators": {
+    "private_evaluator_sha256": null,
+    "answer_key_hashes": {},
+    "sandbox_runner_image_digest": null,
+    "sandbox_runner_sha256": null,
+    "t2_hidden_tests_sha256": null,
+    "t2_attestation_key_id_sha256": null,
+    "t2_result_schema": "exp2-formal-v2-t2-sandbox-result-v2",
+    "t2_pinned_image_smoke_sha256": null
+  },
+  "scoring": {
+    "primary_scorer_id": null,
+    "condition_blinded": true,
+    "manual_score_file_sha256": null,
+    "review_package_sha256": null
+  },
+  "run_configuration": {
+    "allow_iteration": false,
+    "max_iterations": 1,
+    "max_failed_iterations": 1,
+    "max_agent_turns": 15,
+    "max_commits_per_run": 3,
+    "timeout_seconds": 1800,
+    "max_token_budget_per_run": 200000,
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "pids_limit": 256,
+    "serial_execution": true
+  },
+  "runs": [],
+  "unresolved_gates": [
+    "approve_protocol",
+    "deploy_and_verify_xcom_repair",
+    "freeze_tasks_and_hidden_evaluators",
+    "freeze_source_and_runtime",
+    "verify_model_proxy_sampling_routing_and_cache",
+    "verify_branch_scope_isolation",
+    "record_isolated_evaluator_runtime"
+  ]
+}

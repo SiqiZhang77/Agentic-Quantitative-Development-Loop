@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "run_id": "ALPHA-101",
+  "issue_key": "ALPHA-101",
+  "command": "backtest",
+  "args": {
+    "strategy": "add RSI filter so we only take long signals when RSI is below 70"
+  },
+  "strategy": {
+    "repo_url": "https://github.com/bankingscience/BSLAgenticQuantDevLoop",
+    "ref": "proxy/litellm-client",
+    "path": "rae_runtime/proxy/strategy.py"
+  }
+}

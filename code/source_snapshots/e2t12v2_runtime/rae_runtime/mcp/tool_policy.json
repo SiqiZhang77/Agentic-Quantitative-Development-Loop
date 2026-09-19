@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "description": "Single source of truth for which tools on the backtest MCP server (rae_runtime/mcp/server.py) are exposed to the LLM, and their least-privilege default. Intended to be consumed later by per-workflow, server-side enforcement (RAE-26).",
+  "default_rule": "read/discovery -> allow; local-only write -> allow unless subsumed by a wrapper tool; external-effect write -> allow but constrained; redundant tool -> block.",
+  "access_values": {
+    "allow": "exposed to the LLM by default",
+    "block": "not exposed to the LLM by default (may be enabled explicitly per workflow); the underlying function is unaffected"
+  },
+  "servers": {
+    "backtest": {
+      "module": "rae_runtime/mcp/server.py",
+      "tools": {
+        "submit_backtest": {
+          "capability": "write",
+          "effect": "external",
+          "category": "submit",
+          "default": "allow",
+          "contract": "baseline template + caller overrides -> engine-valid .request delivered to the watched dir; returns job_name + submitted_at.",
+          "constraints": [
+            "job_name must match ^[A-Za-z0-9_-]+$",
+            "mock vs real delivery gated by USE_REAL_BACKTESTER",
+            "override keys absent from the baseline are reported in a non-blocking warnings list"
+          ],
+          "rationale": "Core capability the agent needs to trigger a run; the write is constrained by job_name validation and the mock/real flag."
+        },
+        "list_master_indices": {
+          "capability": "read",
+          "effect": "none",
+          "category": "discovery",
+          "default": "allow",
+          "contract": "read-only scan of the cluster's master-indices store; returns the available data-pool versions to pass to submit_backtest.",
+          "constraints": [],
+          "rationale": "Read-only discovery, no side effects; needed before submit to pick a current data universe."
+        },
+        "get_backtest_status": {
+          "capability": "read",
+          "effect": "none",
+          "category": "status",
+          "default": "allow",
+          "contract": "poll a submitted job -> completed / rejected / timeout.",
+          "constraints": [],
+          "rationale": "Read-only status poll; required to know when to fetch results."
+        },
+        "get_backtest_results": {
+          "capability": "read",
+          "effect": "local",
+          "category": "results",
+          "default": "allow",
+          "contract": "parse resultsTable.csv and merge schema-compatible outputs -> key performance metrics (Sharpe, drawdown, return, ...).",
+          "constraints": [],
+          "rationale": "The metrics entry point; usable standalone (just needs job_name) to fetch results without running the whole post-processing pipeline."
+        },
+        "list_jobs": {
+          "capability": "read",
+          "effect": "none",
+          "category": "discovery",
+          "default": "allow",
+          "contract": "list all visible backtest jobs and their status.",
+          "constraints": [],
+          "rationale": "Read-only listing; useful for the agent to orient, no side effects."
+        },
+        "run_backtest_postprocessing": {
+          "capability": "write",
+          "effect": "local",
+          "category": "postprocessing",
+          "default": "allow",
+          "contract": "convenience wrapper for a completed job: artifacts -> equity curve (if a ZQQ series is found or supplied) -> results. Auto-discovers the ZQQ file.",
+          "constraints": [],
+          "rationale": "The single post-processing entry point for the agent; writes only under /workspace/output and calls the underlying artifact/equity/results functions directly."
+        },
+        "get_backtest_artifacts": {
+          "capability": "write",
+          "effect": "local",
+          "category": "postprocessing",
+          "default": "block",
+          "contract": "locate artefacts under simulation-results, safely extract the ZIP if requested, copy schema files to output.",
+          "constraints": [],
+          "rationale": "Subsumed by run_backtest_postprocessing, which calls the underlying function directly. Blocking hides it from the LLM only; the wrapper is unaffected."
+        },
+        "generate_equity_curve": {
+          "capability": "write",
+          "effect": "local",
+          "category": "postprocessing",
+          "default": "block",
+          "contract": "read a ZQQ/time-series CSV, generate an equity-curve CSV/PNG under /workspace/output.",
+          "constraints": ["requires an explicit zqq_file_path (no default)"],
+          "rationale": "Not usable standalone by the LLM: its required zqq_file_path is a path the agent cannot know without first locating artefacts. run_backtest_postprocessing auto-discovers the ZQQ file and calls the underlying function directly, so blocking hides it from the LLM without affecting the pipeline."
+        }
+      }
+    }
+  }
+}

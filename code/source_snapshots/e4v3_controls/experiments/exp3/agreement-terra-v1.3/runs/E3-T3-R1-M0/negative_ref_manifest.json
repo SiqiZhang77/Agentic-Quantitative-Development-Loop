@@ -1,0 +1,81 @@
+{
+  "experiment_id": "E3-manager-star-v1",
+  "repositories": [
+    {
+      "current_target_ref": "quant/E3-T3-R1-M0",
+      "deny_refs": {
+        "arbitrary_probe_refs": [
+          "exp3/probe/E3-T3-R1-M0/a",
+          "exp3/probe/E3-T3-R1-M0/b"
+        ],
+        "e2_output_refs": [
+          "exp2/si-formal-v2-source",
+          "exp2/si-smoke-source-v1",
+          "exp2/si-smoke-source-v3",
+          "exp2/si-smoke-source-v4",
+          "experiment-2-data",
+          "feature/exp2-protocol-v1",
+          "feature/exp2-rag",
+          "feature/exp2-rag-v1",
+          "quant/SCRUM-100",
+          "quant/SCRUM-101",
+          "quant/SCRUM-106",
+          "quant/SCRUM-108",
+          "quant/SCRUM-109",
+          "quant/SCRUM-114",
+          "quant/SCRUM-116",
+          "quant/SCRUM-117",
+          "quant/SCRUM-124",
+          "quant/SCRUM-125",
+          "quant/SCRUM-128",
+          "quant/SCRUM-132",
+          "quant/SCRUM-133",
+          "quant/SCRUM-136",
+          "quant/SCRUM-138",
+          "quant/SCRUM-145",
+          "quant/SCRUM-150",
+          "quant/SCRUM-159",
+          "quant/SCRUM-161",
+          "quant/SCRUM-163",
+          "quant/SCRUM-172",
+          "quant/SCRUM-173",
+          "quant/SCRUM-174",
+          "quant/SCRUM-176",
+          "quant/SCRUM-177",
+          "quant/SCRUM-179",
+          "quant/SCRUM-180",
+          "quant/SCRUM-181",
+          "quant/SCRUM-182",
+          "quant/SCRUM-183",
+          "quant/SCRUM-184",
+          "quant/SCRUM-185",
+          "quant/SCRUM-8",
+          "quant/SCRUM-83",
+          "quant/SCRUM-9",
+          "quant/SCRUM-9-CANARY-20260716_173030",
+          "quant/SCRUM-9-CANARY2-20260716_175601",
+          "quant/SCRUM-99"
+        ],
+        "earlier_e3_targets": [
+          "quant/E3-T1-R2-M0",
+          "quant/E3-T1-R2-M1",
+          "quant/E3-T2-R1-M0",
+          "quant/E3-T2-R1-M1",
+          "quant/E3-T2-R2-M0",
+          "quant/E3-T2-R2-M1"
+        ],
+        "protected_refs": [
+          "main"
+        ],
+        "v5_refs": [
+          "exp2/si-smoke-source-v5"
+        ]
+      },
+      "paired_target_ref": "quant/E3-T3-R1-M1",
+      "repo_full_name": "bankingscience/BSLAgenticQuantDevLoop",
+      "source_ref": "exp3/terra-source-v3"
+    }
+  ],
+  "run_id": "E3-T3-R1-M0",
+  "schema_version": "exp3-negative-ref-manifest-v1"
+}

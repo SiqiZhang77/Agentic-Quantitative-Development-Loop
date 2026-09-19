@@ -1,0 +1,37 @@
+{
+  "architecture_mode": "single_agent",
+  "experiment_id": "E3-manager-star-v1",
+  "model_alias": "gpt-5.6-terra",
+  "negative_ref_manifest_sha256": "ccadb748ab65ec26727c9bb9a0dd7fcde4af3eae87ce8cd27bd0cee6b11a4eab",
+  "paired_target_ref": "quant/E3-T2-R2-M1",
+  "protocol_version": "1.0.0-rc2",
+  "provider_base_url": "https://api.openai.com/v1",
+  "provider_identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+  "provider_mode": "openai",
+  "public_inputs_sha256": {},
+  "rag_enabled": false,
+  "replicate": 2,
+  "retrieval_context_included": false,
+  "role_budgets": null,
+  "rubric_sha256": "d55e2203461c2d044f62c00d7677bc0d9b1a5f2c3d7a660742a94adba4541c79",
+  "run_key": "E3-T2-R2-M0",
+  "runtime_limits": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "pids_limit": 256,
+    "timeout_seconds": 1800
+  },
+  "sandbox_profile_sha256": "d7278ce1f14dd92edbd7206fdc738dd094103a4bfc42c8a60f3382d1a54bd758",
+  "schema_version": "exp3-run-identity-v2",
+  "shared_budget": {
+    "max_calls": 15,
+    "max_tokens": 200000
+  },
+  "source_commit": "76b97a09a9a451e7fd455f0ef5c000875c0746b6",
+  "source_ref": "exp3/terra-source-v1",
+  "status": "draft_local_only",
+  "target_ref": "quant/E3-T2-R2-M0",
+  "task_id": "T2",
+  "task_text_sha256": "4343d75181bc70b2198f3a93ed05c91ccb7d3d54f9485b34104e60d0d99f6c6e",
+  "tool_implementation_sha256": "2868fe8b4bcb5034feff43d5054ec0fc64ee12ba47c79359e9547e4bc03aba27"
+}

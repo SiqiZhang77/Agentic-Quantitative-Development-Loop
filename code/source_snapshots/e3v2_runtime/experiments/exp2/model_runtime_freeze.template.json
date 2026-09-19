@@ -1,0 +1,48 @@
+{
+  "captured_at_utc": "REQUIRED_RFC3339",
+  "client_alias": "qwen3-coder",
+  "deployments": [
+    {
+      "checkpoint_or_deployment_revision": "UNKNOWN",
+      "litellm_params_model": "REQUIRED",
+      "provider_or_serving_backend": "REQUIRED",
+      "region": "UNKNOWN_OR_NOT_APPLICABLE",
+      "rpm": "UNKNOWN_OR_INTEGER_OR_UNLIMITED",
+      "sanitized_model_id": "REQUIRED",
+      "tpm": "UNKNOWN_OR_INTEGER_OR_UNLIMITED",
+      "weight": "UNKNOWN_OR_NUMBER_OR_NOT_APPLICABLE"
+    }
+  ],
+  "experiment_virtual_key_or_team_limits": {
+    "allowed_models": [
+      "qwen3-coder"
+    ],
+    "budget_reset_period": "UNKNOWN_OR_NOT_CONFIGURED",
+    "max_budget": "UNKNOWN_OR_NUMBER_OR_UNLIMITED",
+    "max_parallel_requests": "UNKNOWN_OR_INTEGER_OR_UNLIMITED",
+    "rpm": "UNKNOWN_OR_INTEGER_OR_UNLIMITED",
+    "tpm": "UNKNOWN_OR_INTEGER_OR_UNLIMITED"
+  },
+  "litellm_server_version": "REQUIRED",
+  "notes": "Do not put secrets or raw configuration in this file.",
+  "routing": {
+    "cache_enabled": "REQUIRED_BOOLEAN_OR_UNKNOWN",
+    "fallbacks": "REQUIRED_LIST_OR_EMPTY_OR_UNKNOWN",
+    "retries": "REQUIRED_INTEGER_OR_UNKNOWN",
+    "strategy": "REQUIRED_OR_UNKNOWN",
+    "timeout_seconds": "REQUIRED_NUMBER_OR_UNKNOWN"
+  },
+  "sampling_defaults": {
+    "drop_params": "REQUIRED_BOOLEAN_OR_UNKNOWN",
+    "max_tokens": "REQUIRED_NUMBER_OR_UNSET_OR_UNKNOWN",
+    "seed": "REQUIRED_NUMBER_OR_UNSET_OR_UNKNOWN",
+    "temperature": "REQUIRED_NUMBER_OR_UNSET_OR_UNKNOWN",
+    "top_p": "REQUIRED_NUMBER_OR_UNSET_OR_UNKNOWN"
+  },
+  "sanitized_configuration_sha256": "REQUIRED_HEX64",
+  "seed_support": {
+    "evidence": "REQUIRED",
+    "status": "supported_or_rejected_or_silently_ignored_or_unknown"
+  },
+  "server_image_tag_or_digest": "REQUIRED"
+}

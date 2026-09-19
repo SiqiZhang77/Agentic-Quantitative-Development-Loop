@@ -1,0 +1,1623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bankingscience.local/schemas/runtime_response.schema.json",
+  "title": "RAE Runtime Response Payload",
+  "description": "Versioned final exit contract written by the isolated RAE execution container back to Team IW after completing a grouped Jira ticket run. This remains the canonical final result, while progress JSONL is only a temporary side-channel. Includes optional HDFS path reporting for weles-to-amok-to-HDFS workflows. For parallel container runs, HDFS uploaded paths should be unique per ticket and/or run_id to prevent overwrites. On normal completion, failure, or timeout inside the run, RAE should still emit a valid response JSON. For FAILED or TIMEOUT results, diagnostics.error_code and diagnostics.error_message must be populated. The same final response object should be written atomically to output_paths.result_path and printed as the final stdout line. If the container fails before the runtime loop starts and no response file is produced, that should be treated as infrastructure failure outside this contract. RAE-17 adds evaluation (machine-readable scoring of performance_metrics against the request's execution_objectives.target_criteria) and recommended_action, so IW's iteration-stop and Jira-reporting logic does not need to re-derive pass/fail itself.",
+  "$defs": {
+    "exp3BudgetUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calls", "prompt_tokens", "completion_tokens", "total_tokens",
+        "failures", "latency_seconds", "configured_max_calls", "transferred_calls",
+        "max_calls", "max_tokens",
+        "call_exhausted", "token_exhausted", "over_budget"
+      ],
+      "properties": {
+        "calls": {"type": "integer", "minimum": 0},
+        "prompt_tokens": {"type": "integer", "minimum": 0},
+        "completion_tokens": {"type": "integer", "minimum": 0},
+        "total_tokens": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "latency_seconds": {"type": "number", "minimum": 0},
+        "configured_max_calls": {"type": "integer", "minimum": 0},
+        "transferred_calls": {"type": "integer"},
+        "max_calls": {"type": "integer", "minimum": 0},
+        "max_tokens": {"type": "integer", "minimum": 0},
+        "call_exhausted": {"type": "boolean"},
+        "token_exhausted": {"type": "boolean"},
+        "over_budget": {"type": "boolean"}
+      }
+    },
+    "exp3ProviderCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "call_id", "role", "phase", "status", "failure_type",
+        "input_sha256", "output_sha256", "prompt_tokens",
+        "completion_tokens", "total_tokens", "latency_seconds"
+      ],
+      "properties": {
+        "call_id": {"type": "string", "pattern": "^exp3-[0-9]{6}$"},
+        "role": {"type": "string", "enum": ["manager", "architect", "developer"]},
+        "phase": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "status": {"type": "string", "enum": ["succeeded", "failed"]},
+        "failure_type": {"type": ["string", "null"], "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"},
+        "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "output_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "prompt_tokens": {"type": "integer", "minimum": 0},
+        "completion_tokens": {"type": "integer", "minimum": 0},
+        "total_tokens": {"type": "integer", "minimum": 0},
+        "latency_seconds": {"type": "number", "minimum": 0}
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "execution_summary",
+    "performance_metrics",
+    "generated_artifacts",
+    "diagnostics",
+    "evaluation",
+    "recommended_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this container run. Should match the request run_id."
+    },
+    "execution_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "High-level tracking data and canonical Swarm agent execution trace. Live progress events should be treated as a side-channel subset of this final trace rather than a competing trace format.",
+      "required": [
+        "ticket_id",
+        "status",
+        "start_time",
+        "end_time",
+        "iteration_traces"
+      ],
+      "properties": {
+        "ticket_id": {
+          "type": "string",
+          "oneOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$"
+            },
+            {
+              "const": "unknown"
+            }
+          ],
+          "description": "Jira ticket key, for example SCRUM-46. Uses 'unknown' only when the input cannot provide a valid ticket key."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "failed",
+            "timeout"
+          ],
+          "description": "Final status of the whole container run."
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "iteration_traces": {
+          "type": "array",
+          "description": "Step-by-step tool calls made by the internal Swarm agent loop for debugging and audit.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "iteration",
+              "agent",
+              "tool_call",
+              "status",
+              "message"
+            ],
+            "properties": {
+              "iteration": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "agent": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tool_call": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "succeeded",
+                  "failed",
+                  "skipped"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "description": "Canonical final trace item. Progress events may reuse iteration, agent, tool_call, status, message, and timestamp as a live subset while the run is active."
+          }
+        },
+        "zero_code_modifications": {
+          "type": "boolean",
+          "description": "True when the original request specified zero code modifications. If true, modified_files and new_files must be empty."
+        },
+        "hdfs_upload_required": {
+          "type": "boolean",
+          "description": "True when the request asked RAE to publish forCluster output to HDFS."
+        },
+        "request_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "backtest",
+            "ingestion",
+            "refactor",
+            "analysis",
+            "other",
+            null
+          ],
+          "description": "Request type copied from execution_objectives.strategy_type. Values mirror the runtime request contract; the field may be null or omitted for legacy runs. It distinguishes non-backtest runs from backtests that fail before producing performance_metrics."
+        }
+      }
+    },
+    "input_datasets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "description": "Verified read-only input dataset lineage. Records include the approved source, run-isolated HDFS copy, container path, byte size, and SHA-256 checksum used for this execution.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset_id",
+          "source_kind",
+          "original_filename",
+          "source_uri",
+          "container_path",
+          "format",
+          "read_only"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "hdfs",
+              "jira_attachment"
+            ]
+          },
+          "original_filename": {
+            "type": "string",
+            "pattern": "^(?!.*\\.\\.)(?!.*[/\\\\])[A-Za-z0-9._ -]+$",
+            "maxLength": 255
+          },
+          "source_uri": {
+            "type": "string",
+            "pattern": "^(?:hdfs://[^?#]+|jira-attachment://[0-9]+)$",
+            "description": "Original approved HDFS URI or selected Jira attachment identifier."
+          },
+          "run_staged_hdfs_uri": {
+            "type": "string",
+            "pattern": "^hdfs://[^?#]+$",
+            "description": "Run-isolated HDFS copy used by the YARN worker, populated during orchestration."
+          },
+          "container_path": {
+            "type": "string",
+            "pattern": "^/workspace/input/datasets/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "csv",
+              "json",
+              "xlsx",
+              "parquet"
+            ]
+          },
+          "read_only": {
+            "type": "boolean",
+            "const": true
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "jira_attachment_id": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Jira attachment id when source_kind is jira_attachment."
+          },
+          "jira_mime_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "jira_created": {
+            "type": "string",
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "analysis_results": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "description": "Exact structured outputs from the measured zero-code dataset-analysis path. The LLM selects only allowlisted operations; the deterministic executor calculates every value from the complete verified datasets.",
+      "required": [
+        "planner",
+        "executor",
+        "dataset_summaries",
+        "plan",
+        "operations"
+      ],
+      "properties": {
+        "planner": {
+          "type": "string",
+          "const": "llm_structured_plan"
+        },
+        "executor": {
+          "type": "string",
+          "const": "deterministic_standard_library"
+        },
+        "dataset_summaries": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "plan": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "performance_metrics": {
+      "description": "Financial and performance outputs. This block can be null if the run did not involve a backtest.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total_return",
+            "sharpe_ratio",
+            "max_drawdown",
+            "alpha",
+            "beta",
+            "time_series_data_path"
+          ],
+          "properties": {
+            "total_return": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "sharpe_ratio": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "max_drawdown": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "alpha": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "beta": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "time_series_data_path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+            }
+          }
+        }
+      ]
+    },
+    "generated_artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Pointer registry for generated files and external output locations. Large binary files or code dumps should not be embedded directly in this JSON payload.",
+      "required": [
+        "modified_files",
+        "new_files",
+        "backtest_plots_path"
+      ],
+      "properties": {
+        "modified_files": {
+          "type": "array",
+          "description": "Paths of modified files relative to the mounted repository or working directory. Must be empty for zero-code runs.",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+          },
+          "uniqueItems": true
+        },
+        "new_files": {
+          "type": "array",
+          "description": "Paths of newly generated files relative to the mounted repository or working directory.",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+          },
+          "uniqueItems": true
+        },
+        "backtest_plots_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Path to generated PNG charts or HTML reports in the mounted output directory.",
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+        },
+        "executed_request_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Path in the mounted output directory to the exact engine .request that was submitted for this run, whether it was staged from the ticket branch or generated from a baseline plus the ticket's params. The orchestrator uploads it as an attachment so the configuration that produced these metrics stays recoverable after the temporary output directory is removed. Null when no .request was staged (for example the engine's own default template was used).",
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+        },
+        "data_paths": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Pointer registry for external data transfer paths, especially the weles-to-amok-to-HDFS forCluster workflow. For parallel container runs, these paths should identify the exact per-ticket/per-run output location used by this container.",
+          "required": [
+            "weles_forcluster_path",
+            "amok_landing_path",
+            "hdfs_uploaded_path"
+          ],
+          "properties": {
+            "weles_forcluster_path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/(?!.*\\.\\.)[A-Za-z0-9._~/-]+$",
+              "description": "Absolute path to the forCluster directory on weles after unzipping and running runMe.sh."
+            },
+            "amok_landing_path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/(?!.*\\.\\.)[A-Za-z0-9._~/-]+$",
+              "description": "Absolute path to the copied forCluster directory inside the amok landing area."
+            },
+            "hdfs_uploaded_path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^/shared/model-logs/(?!.*\\.\\.)[A-Za-z0-9._/-]+$",
+              "description": "Final uploaded HDFS path that IW can surface in the Jira ticket. This should be the exact unique per-ticket/per-run path used by this container, not a shared static directory. It should be scoped by ticket_id and/or run_id to avoid overwrites when multiple containers run in parallel."
+            }
+          }
+        },
+        "branch_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Git branch containing the code changes produced by the RAE run. Null if no code changes were made or branch information is unavailable.",
+          "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+        },
+        "repository_branches": {
+          "type": "array",
+          "description": "Per-repository branch and commit summary for single- and multi-repository runs.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "alias",
+              "repo_full_name",
+              "source_branch",
+              "target_branch"
+            ],
+            "properties": {
+              "alias": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]+$"
+              },
+              "repo_full_name": {
+                "type": "string",
+                "pattern": "^bankingscience/[A-Za-z0-9_.-]+$"
+              },
+              "source_branch": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+$"
+              },
+              "target_branch": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+              },
+              "branch_action": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  null,
+                  "created",
+                  "reused",
+                  "unknown",
+                  "skipped",
+                  "failed"
+                ]
+              },
+              "commit_sha": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[A-Fa-f0-9]{7,40}$"
+              },
+              "modified_files": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                },
+                "uniqueItems": true
+              },
+              "new_files": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                },
+                "uniqueItems": true
+              },
+              "existing_files": {
+                "type": "array",
+                "description": "Validated existing target files accepted on a reused ticket branch; these were not changed by this run.",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Failure, timeout, and debugging information for the orchestration layer. For FAILED or TIMEOUT results, error_code and error_message must be populated. For successful results, they may be null. HDFS-related errors should distinguish upload failures, verification failures, and path collision/overwrite prevention.",
+      "required": [
+        "error_code",
+        "error_message",
+        "raw_log_reference"
+      ],
+      "properties": {
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "STRATEGY_COMPILE_ERROR",
+            "RATE_LIMIT_EXCEEDED",
+            "TIMEOUT_REACHED",
+            "PAYLOAD_VALIDATION_ERROR",
+            "RUNTIME_ERROR",
+            "QUALITY_VALIDATION_FAILED",
+            "AGENT_TURN_LIMIT_EXCEEDED",
+            "HDFS_UPLOAD_FAILED",
+            "HDFS_VERIFY_FAILED",
+            "HDFS_PATH_ALREADY_EXISTS",
+            "CONTAINER_RUNTIME_FAILURE",
+            "UNKNOWN_ERROR"
+          ]
+        },
+        "error_message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_log_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^/workspace/output/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+        }
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional runtime telemetry. New producers should prefer model_names and token_usage; existing producers may still report execution_time_seconds, container_exit_code, retry_count, model_usage, stage_timings, and audit_trace during migration.",
+      "properties": {
+        "execution_time_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total runtime in seconds for the container or inner RAE execution loop."
+        },
+        "container_exit_code": {
+          "type": "integer",
+          "description": "Docker/container exit code. Use 0 for success and non-zero for failure; detailed failure reasons belong in diagnostics."
+        },
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Retry count inside the RAE agent/tool loop. This does not include Airflow task retries."
+        },
+        "model_usage": {
+          "type": "array",
+          "description": "Legacy per-model usage records. Use an empty array when model usage is unavailable.",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "model_name": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string",
+                "examples": [
+                  "litellm",
+                  "openai",
+                  "anthropic",
+                  "local"
+                ]
+              },
+              "prompt_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "completion_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "total_tokens": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "stage_timings": {
+          "type": "array",
+          "description": "Runtime stage timing records. Use an empty array when stage timing is unavailable.",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "stage",
+              "duration_seconds"
+            ],
+            "properties": {
+              "stage": {
+                "type": "string",
+                "minLength": 1
+              },
+              "duration_seconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "audit_trace": {
+          "description": "Optional concise decision summaries for audit. Do not include raw chain-of-thought.",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": true
+            }
+          ]
+        },
+        "model_names": {
+          "type": "array",
+          "description": "Names of models used during the run. Empty when not applicable.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "token_usage": {
+          "type": "array",
+          "description": "Per-model or per-call token usage records. Empty when not applicable.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "model_name",
+              "input_tokens",
+              "output_tokens",
+              "total_tokens"
+            ],
+            "properties": {
+              "model_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "total_tokens": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "experiment3": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Versioned content-free telemetry for explicit formal single-agent and Experiment 3 M0/M1 runs. Omitted for legacy traffic.",
+          "required": [
+            "schema_version", "architecture_mode", "rag_enabled", "status",
+            "failure_phase", "model_alias", "provider_identity", "identity_sha256",
+            "shared_budget", "role_usage", "provider_calls", "calculation_tool_calls",
+            "role_retrieval_deliveries", "commit_count", "handoff_schema_failures",
+            "handoffs", "manager_acceptance_map",
+            "isolation_preflight", "topology"
+          ],
+          "properties": {
+            "schema_version": {"const": "exp3-runtime-telemetry-v4"},
+            "architecture_mode": {"type": "string", "enum": ["single_agent", "manager_star"]},
+            "rag_enabled": {"type": "boolean"},
+            "status": {"type": "string", "enum": ["succeeded", "failed"]},
+            "failure_phase": {
+              "type": ["string", "null"],
+              "pattern": "^[a-z][a-z0-9_]{0,127}$"
+            },
+            "model_alias": {"type": ["string", "null"], "minLength": 1},
+            "provider_identity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schema_version", "provider_mode", "base_url", "model_alias",
+                "transport_model", "adapter", "sha256"
+              ],
+              "properties": {
+                "schema_version": {"const": "llm-provider-identity-v1"},
+                "provider_mode": {"type": "string", "enum": ["company_litellm", "openai"]},
+                "base_url": {"type": "string", "format": "uri", "minLength": 1, "maxLength": 500},
+                "model_alias": {"type": "string", "minLength": 1, "maxLength": 200},
+                "transport_model": {"type": "string", "minLength": 1, "maxLength": 220},
+                "adapter": {"type": "string", "enum": ["litellm_chat_completions", "openai_chat_completions"]},
+                "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+              }
+            },
+            "identity_sha256": {
+              "type": ["string", "null"],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "shared_budget": {"$ref": "#/$defs/exp3BudgetUsage"},
+            "role_usage": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["manager", "architect", "developer"],
+              "properties": {
+                "manager": {"$ref": "#/$defs/exp3BudgetUsage"},
+                "architect": {"$ref": "#/$defs/exp3BudgetUsage"},
+                "developer": {"$ref": "#/$defs/exp3BudgetUsage"}
+              }
+            },
+            "provider_calls": {
+              "type": "array",
+              "maxItems": 40,
+              "items": {"$ref": "#/$defs/exp3ProviderCall"}
+            },
+            "calculation_tool_calls": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "tool", "role", "status", "input_sha256", "output_sha256",
+                  "latency_seconds", "operation_count"
+                ],
+                "properties": {
+                  "tool": {"const": "quant_calculate"},
+                  "role": {"const": "developer"},
+                  "status": {
+                    "type": "string",
+                    "enum": ["succeeded", "partial", "failed", "cap_exceeded", "blocked"]
+                  },
+                  "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                  "output_sha256": {
+                    "type": ["string", "null"],
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "stored_results_sha256": {
+                    "type": ["string", "null"],
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "completed_operation_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 64
+                  },
+                  "stored_result_shapes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["kind", "shape"],
+                      "properties": {
+                        "kind": {"type": "string", "enum": ["scalar", "array"]},
+                        "shape": {
+                          "type": "array",
+                          "maxItems": 5,
+                          "items": {"type": "integer", "minimum": 0, "maximum": 32768}
+                        }
+                      }
+                    }
+                  },
+                  "latency_seconds": {"type": "number", "minimum": 0},
+                  "operation_count": {"type": "integer", "minimum": 0},
+                  "error": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+                  "error_detail": {"type": "string", "minLength": 1, "maxLength": 500},
+                  "failed_operation_index": {"type": "integer", "minimum": 0, "maximum": 63},
+                  "failed_operation": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+                  "failed_argument": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"}
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {"status": {"enum": ["succeeded", "partial"]}},
+                      "required": ["status"]
+                    },
+                    "then": {
+                      "properties": {"operation_count": {"maximum": 64}}
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {"operation_count": {"minimum": 65}},
+                      "required": ["operation_count"]
+                    },
+                    "then": {
+                      "required": ["error"],
+                      "properties": {
+                        "status": {"const": "failed"},
+                        "error": {"const": "invalid_operation_count"}
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "role_retrieval_deliveries": {
+              "type": "array",
+              "maxItems": 10,
+              "description": "Per-attempt, per-manager-star-stage proof that the same frozen RAG evidence was included. Contains attempt number, hashes and counts only; empty for single-agent and RAG-disabled runs.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "attempt", "phase", "role", "status", "evidence_text_sha256",
+                  "prompt_template_sha256", "injected_memory_count",
+                  "injected_memory_ids_sha256"
+                ],
+                "properties": {
+                  "attempt": {"type": "integer", "minimum": 1, "maximum": 2},
+                  "phase": {
+                    "type": "string",
+                    "enum": [
+                      "manager_to_architect", "architect_to_manager",
+                      "manager_to_developer", "developer_to_manager",
+                      "manager_final"
+                    ]
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["manager", "architect", "developer"]
+                  },
+                  "status": {"const": "delivered"},
+                  "evidence_text_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "prompt_template_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "injected_memory_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  },
+                  "injected_memory_ids_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                }
+              }
+            },
+            "commit_count": {"type": "integer", "minimum": 0},
+            "handoff_schema_failures": {"type": "integer", "minimum": 0},
+            "handoffs": {
+              "type": "array",
+              "maxItems": 6,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["version", "producer", "sha256", "char_count"],
+                "properties": {
+                  "version": {
+                    "type": "string",
+                    "enum": ["architect_plan_v1", "developer_result_v1", "manager_final_v1"]
+                  },
+                  "producer": {"type": "string", "enum": ["manager", "architect", "developer"]},
+                  "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                  "char_count": {"type": "integer", "minimum": 0}
+                }
+              }
+            },
+            "manager_acceptance_map": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["approved_count", "evaluated_count", "passed_count", "complete", "sha256"],
+                  "properties": {
+                    "approved_count": {"type": "integer", "minimum": 0},
+                    "evaluated_count": {"type": "integer", "minimum": 0},
+                    "passed_count": {"type": "integer", "minimum": 0},
+                    "complete": {"type": "boolean"},
+                    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+                  }
+                }
+              ]
+            },
+            "isolation_preflight": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "schema_version", "passed", "manifest_sha256",
+                    "deny_ref_set_sha256", "pre_orchestration_checks",
+                    "pre_model_call_checks", "repository_count", "denied_ref_count"
+                  ],
+                  "properties": {
+                    "schema_version": {"const": "exp3-negative-ref-preflight-evidence-v1"},
+                    "passed": {"const": true},
+                    "manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                    "deny_ref_set_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                    "pre_orchestration_checks": {"type": "integer", "minimum": 1, "maximum": 2},
+                    "pre_model_call_checks": {"type": "integer", "minimum": 0, "maximum": 40},
+                    "repository_count": {"type": "integer", "minimum": 1},
+                    "denied_ref_count": {"type": "integer", "minimum": 1}
+                  }
+                }
+              ]
+            },
+            "attempts": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "attempt", "status", "completion", "provider_call_count",
+                  "commit_count", "committed_paths", "answer_capture_status",
+                  "saved_item_count", "required_item_count",
+                  "artifact_delivery_status", "runtime_exit_status"
+                ],
+                "properties": {
+                  "attempt": {"type": "integer", "minimum": 1, "maximum": 2},
+                  "status": {"type": "string", "enum": ["succeeded", "failed"]},
+                  "completion": {
+                    "type": "string",
+                    "enum": ["complete", "required_items_missing", "required_commit_missing", "runtime_failure"]
+                  },
+                  "provider_call_count": {"type": "integer", "minimum": 0, "maximum": 20},
+                  "commit_count": {"type": "integer", "minimum": 0},
+                  "committed_paths": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                    }
+                  },
+                  "answer_capture_status": {
+                    "type": "string",
+                    "enum": ["not_applicable", "none", "partial", "complete"]
+                  },
+                  "saved_item_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 25
+                  },
+                  "required_item_count": {
+                    "type": "integer",
+                    "enum": [0, 25]
+                  },
+                  "artifact_delivery_status": {
+                    "type": "string",
+                    "enum": ["not_committed", "committed"]
+                  },
+                  "runtime_exit_status": {
+                    "type": "string",
+                    "enum": ["clean", "error"]
+                  },
+                  "failure_type": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "required_item_count": {"const": 25},
+                        "completion": {"const": "complete"}
+                      },
+                      "required": ["required_item_count", "completion"]
+                    },
+                    "then": {
+                      "properties": {
+                        "saved_item_count": {"const": 25},
+                        "answer_capture_status": {"const": "complete"}
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "required_item_count": {"const": 25},
+                        "saved_item_count": {"const": 25}
+                      },
+                      "required": ["required_item_count", "saved_item_count"]
+                    },
+                    "then": {
+                      "properties": {
+                        "completion": {"const": "complete"},
+                        "answer_capture_status": {"const": "complete"}
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "completion": {"const": "required_items_missing"}
+                      },
+                      "required": ["completion"]
+                    },
+                    "then": {
+                      "properties": {
+                        "required_item_count": {"const": 25},
+                        "saved_item_count": {"maximum": 24}
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "completion": {"const": "required_commit_missing"}
+                      },
+                      "required": ["completion"]
+                    },
+                    "then": {
+                      "properties": {"required_item_count": {"const": 0}}
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {"completion": {"const": "runtime_failure"}},
+                      "required": ["completion"]
+                    },
+                    "then": {"properties": {"status": {"const": "failed"}}}
+                  }
+                ]
+              }
+            },
+            "topology": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["cursor", "sequence_complete", "finalized"],
+                  "properties": {
+                    "cursor": {"type": "integer", "minimum": 0, "maximum": 5},
+                    "sequence_complete": {"type": "boolean"},
+                    "finalized": {"type": "boolean"}
+                  }
+                }
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "shared_budget": {
+                    "properties": {"max_calls": {"const": 40}},
+                    "required": ["max_calls"]
+                  }
+                },
+                "required": ["shared_budget"]
+              },
+              "then": {"required": ["attempts"]}
+            }
+          ]
+        },
+        "retrieval": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Text-free Jira retrieval audit. Query and evidence text must never be copied into the response.",
+          "required": [
+            "enabled",
+            "delivery_mode",
+            "prompt_injected"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "delivery_mode": {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "shadow",
+                "generator_prompt"
+              ],
+              "description": "Whether evidence was disabled, retrieved only for shadow audit, or delivered only to the generator prompt."
+            },
+            "prompt_injected": {
+              "type": "boolean"
+            },
+            "evidence_text_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "prompt_template_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "injected_memory_ids": {
+              "type": "array",
+              "maxItems": 10,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,200}$"
+              },
+              "description": "Ranked subset of retrieved memory IDs whose bounded text reached the coding-agent prompt."
+            },
+            "status": {
+              "type": "string",
+              "enum": ["ok", "empty"]
+            },
+            "query_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "retriever_name": {
+              "type": "string"
+            },
+            "retriever_version": {
+              "type": "string"
+            },
+            "corpus_id": {
+              "type": "string"
+            },
+            "corpus_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "index_id": {
+              "type": "string"
+            },
+            "index_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "exclusion_list_id": {
+              "type": "string"
+            },
+            "exclusion_list_sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            },
+            "cutoff_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requested_top_k": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "max_memories_per_source_ticket": {
+              "type": "integer",
+              "const": 2
+            },
+            "candidate_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "memories": {
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["memory_id", "rank", "score"],
+                "properties": {
+                  "memory_id": {
+                    "type": "string"
+                  },
+                  "rank": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  },
+                  "score": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "enabled": {"const": true}
+                },
+                "required": ["enabled"]
+              },
+              "then": {
+                "properties": {
+                  "delivery_mode": {
+                    "enum": [
+                      "shadow",
+                      "generator_prompt"
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "query_sha256",
+                  "retriever_name",
+                  "retriever_version",
+                  "corpus_id",
+                  "corpus_sha256",
+                  "index_id",
+                  "index_sha256",
+                  "exclusion_list_id",
+                  "exclusion_list_sha256",
+                  "cutoff_at",
+                  "requested_top_k",
+                  "max_memories_per_source_ticket",
+                  "candidate_count",
+                  "memories"
+                ]
+              },
+              "else": {
+                "properties": {
+                  "delivery_mode": {
+                    "const": "disabled"
+                  },
+                  "prompt_injected": {
+                    "const": false
+                  },
+                  "status": false,
+                  "query_sha256": false,
+                  "retriever_name": false,
+                  "retriever_version": false,
+                  "corpus_id": false,
+                  "corpus_sha256": false,
+                  "index_id": false,
+                  "index_sha256": false,
+                  "exclusion_list_id": false,
+                  "exclusion_list_sha256": false,
+                  "cutoff_at": false,
+                  "requested_top_k": false,
+                  "max_memories_per_source_ticket": false,
+                  "candidate_count": false,
+                  "memories": false,
+                  "evidence_text_sha256": false,
+                  "prompt_template_sha256": false,
+                  "injected_memory_ids": false
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "delivery_mode": {
+                    "const": "generator_prompt"
+                  }
+                },
+                "required": [
+                  "delivery_mode"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "prompt_injected": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "evidence_text_sha256",
+                  "prompt_template_sha256",
+                  "injected_memory_ids"
+                ]
+              },
+              "else": {
+                "properties": {
+                  "prompt_injected": {
+                    "const": false
+                  },
+                  "evidence_text_sha256": false,
+                  "prompt_template_sha256": false,
+                  "injected_memory_ids": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "RAE-17: machine-readable scoring of performance_metrics against the request's execution_objectives.target_criteria. Always present, same shape on every run; fields fall back to defaults when no target_criteria were supplied or the run did not reach succeeded status.",
+      "required": [
+        "met_criteria",
+        "confidence",
+        "criteria_results",
+        "unrecognised_criteria",
+        "summary"
+      ],
+      "properties": {
+        "met_criteria": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True if every supplied criterion passed. False if at least one supplied criterion was scored and failed. Null if no target_criteria were supplied, none could be scored, or the run's status was not succeeded."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of criteria_results entries that had a non-null actual value, i.e. how much of the criteria set was actually scorable. 0 when criteria_results is empty."
+        },
+        "criteria_results": {
+          "type": "array",
+          "description": "Per-criterion scoring detail. Empty when no target_criteria were supplied or the run's status was not succeeded.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "criterion",
+              "metric",
+              "threshold",
+              "actual",
+              "passed"
+            ],
+            "properties": {
+              "criterion": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The target_criteria key this result scores, e.g. min_sharpe_ratio."
+              },
+              "metric": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The performance_metrics field the criterion was compared against."
+              },
+              "threshold": {
+                "type": "number"
+              },
+              "actual": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "description": "The run's value for this metric. Null if performance_metrics did not provide it, in which case passed is also null."
+              },
+              "passed": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "unrecognised_criteria": {
+          "type": "array",
+          "description": "target_criteria keys that did not match a known criterion name and so were not scored. Empty in the normal case; a non-empty list usually means a typo or a criterion not yet supported by this evaluator.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "summary": {
+          "type": "string",
+          "description": "Human-readable one-line explanation of the evaluation outcome, suitable for posting back to Jira."
+        }
+      }
+    },
+    "recommended_action": {
+      "type": "string",
+      "enum": [
+        "accept",
+        "iterate",
+        "review",
+        "escalate"
+      ],
+      "description": "accept = status succeeded and evaluation.met_criteria is true. iterate = status succeeded but evaluation.met_criteria is false, i.e. another attempt may help. review = status succeeded but evaluation.met_criteria is null (no usable target_criteria or metrics to score against), needs a human look. escalate = status failed or timeout."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "execution_summary": {
+            "properties": {
+              "zero_code_modifications": {
+                "const": true
+              }
+            },
+            "required": [
+              "zero_code_modifications"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "generated_artifacts": {
+            "properties": {
+              "modified_files": {
+                "maxItems": 0
+              },
+              "new_files": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_summary": {
+            "properties": {
+              "hdfs_upload_required": {
+                "const": true
+              },
+              "status": {
+                "const": "succeeded"
+              }
+            },
+            "required": [
+              "hdfs_upload_required",
+              "status"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "generated_artifacts": {
+            "properties": {
+              "data_paths": {
+                "properties": {
+                  "hdfs_uploaded_path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^/shared/model-logs/(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+                  }
+                },
+                "required": [
+                  "hdfs_uploaded_path"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_summary": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "failed",
+                  "timeout"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "diagnostics": {
+            "properties": {
+              "error_code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error_message": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "error_code",
+              "error_message"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {
+            "properties": {
+              "execution_summary": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "failed",
+                      "timeout"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          },
+          {
+            "properties": {
+              "diagnostics": {
+                "properties": {
+                  "error_code": {
+                    "not": {
+                      "const": "QUALITY_VALIDATION_FAILED"
+                    }
+                  }
+                },
+                "required": [
+                  "error_code"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "recommended_action": {
+            "const": "escalate"
+          },
+          "evaluation": {
+            "properties": {
+              "met_criteria": {
+                "const": null
+              },
+              "criteria_results": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

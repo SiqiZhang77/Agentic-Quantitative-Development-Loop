@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "memories": [
+    {
+      "memory_id": "PUBLIC-OFFLINE-TEST-01",
+      "text": "Public synthetic memory used only by offline E4 control tests."
+    }
+  ]
+}

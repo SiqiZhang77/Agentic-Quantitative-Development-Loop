@@ -1,0 +1,43 @@
+{
+  "schema_version": "exp2-formal-v2-task-registry-v1",
+  "tasks": [
+    {
+      "task_id": "T1",
+      "task_file": "tasks/T1_legacy_comprehension.txt",
+      "strategy_type": "other",
+      "resource_path": "rae_runtime/sandbox/result_io.py",
+      "target_path": "experiments/exp2/formal-v2/submissions/result_emission_analysis.md",
+      "input_files": [],
+      "allowed_directories": [
+        "rae_runtime/sandbox",
+        "experiments/exp2/formal-v2/submissions"
+      ]
+    },
+    {
+      "task_id": "T2",
+      "task_file": "tasks/T2_class_design.txt",
+      "strategy_type": "other",
+      "resource_path": "rae_runtime/proxy/budget_guard.py",
+      "target_path": "rae_runtime/proxy/budget_guard.py",
+      "input_files": [],
+      "allowed_directories": [
+        "rae_runtime/proxy",
+        "rae_runtime/sandbox/tests"
+      ]
+    },
+    {
+      "task_id": "T3",
+      "task_file": "tasks/T3_cumulative_returns.txt",
+      "strategy_type": "other",
+      "resource_path": "experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv",
+      "target_path": "experiments/exp2/formal-v2/submissions/cumulative_returns.json",
+      "input_files": [
+        "task_inputs/financial_returns_v1.csv"
+      ],
+      "allowed_directories": [
+        "experiments/exp2/formal-v2/task_inputs",
+        "experiments/exp2/formal-v2/submissions"
+      ]
+    }
+  ]
+}

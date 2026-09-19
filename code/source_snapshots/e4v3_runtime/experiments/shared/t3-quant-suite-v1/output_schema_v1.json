@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/t3-quant-portfolio-analytics-v1.schema.json",
+  "title": "T3 layered synthetic portfolio analytics output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "observation_count",
+    "annualization_periods",
+    "calculation_tool",
+    "level_a",
+    "level_b",
+    "level_c"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "t3-quant-portfolio-analytics-v1"
+    },
+    "dataset_id": {
+      "const": "synthetic-portfolio-returns-v1"
+    },
+    "observation_count": {
+      "const": 120
+    },
+    "annualization_periods": {
+      "const": 252
+    },
+    "calculation_tool": {
+      "const": "quant_calculate"
+    },
+    "level_a": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rows",
+        "terminal_cumulative_return"
+      ],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "minItems": 120,
+          "maxItems": 120,
+          "items": {
+            "$ref": "#/$defs/levelARow"
+          }
+        },
+        "terminal_cumulative_return": {
+          "$ref": "#/$defs/fourSeries"
+        }
+      }
+    },
+    "level_b": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rows",
+        "mean_daily_return",
+        "sample_daily_volatility",
+        "annualized_volatility",
+        "annualized_geometric_return",
+        "maximum_drawdown",
+        "maximum_drawdown_date"
+      ],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "minItems": 120,
+          "maxItems": 120,
+          "items": {
+            "$ref": "#/$defs/levelBRow"
+          }
+        },
+        "mean_daily_return": {
+          "type": "number"
+        },
+        "sample_daily_volatility": {
+          "type": "number",
+          "minimum": 0
+        },
+        "annualized_volatility": {
+          "type": "number",
+          "minimum": 0
+        },
+        "annualized_geometric_return": {
+          "type": "number"
+        },
+        "maximum_drawdown": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 0
+        },
+        "maximum_drawdown_date": {
+          "$ref": "#/$defs/date"
+        }
+      }
+    },
+    "level_c": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rebalance_events",
+        "total_turnover",
+        "total_transaction_cost",
+        "net_terminal_wealth",
+        "net_cumulative_return",
+        "net_maximum_drawdown",
+        "net_maximum_drawdown_date"
+      ],
+      "properties": {
+        "rebalance_events": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/$defs/rebalanceEvent"
+          }
+        },
+        "total_turnover": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_transaction_cost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "net_terminal_wealth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "net_cumulative_return": {
+          "type": "number"
+        },
+        "net_maximum_drawdown": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 0
+        },
+        "net_maximum_drawdown_date": {
+          "$ref": "#/$defs/date"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_a",
+        "asset_b",
+        "asset_c"
+      ],
+      "properties": {
+        "asset_a": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "asset_b": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "asset_c": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "fourSeries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_a",
+        "asset_b",
+        "asset_c",
+        "portfolio"
+      ],
+      "properties": {
+        "asset_a": {
+          "type": "number"
+        },
+        "asset_b": {
+          "type": "number"
+        },
+        "asset_c": {
+          "type": "number"
+        },
+        "portfolio": {
+          "type": "number"
+        }
+      }
+    },
+    "levelARow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "asset_a_cumulative_return",
+        "asset_b_cumulative_return",
+        "asset_c_cumulative_return",
+        "portfolio_cumulative_return"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "asset_a_cumulative_return": {
+          "type": "number"
+        },
+        "asset_b_cumulative_return": {
+          "type": "number"
+        },
+        "asset_c_cumulative_return": {
+          "type": "number"
+        },
+        "portfolio_cumulative_return": {
+          "type": "number"
+        }
+      }
+    },
+    "levelBRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "gross_wealth",
+        "running_peak",
+        "drawdown"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "gross_wealth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "running_peak": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "drawdown": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 0
+        }
+      }
+    },
+    "rebalanceEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "pre_trade_nav",
+        "pre_trade_weights",
+        "turnover",
+        "transaction_cost",
+        "post_trade_nav",
+        "post_trade_weights"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "pre_trade_nav": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "pre_trade_weights": {
+          "$ref": "#/$defs/weights"
+        },
+        "turnover": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "transaction_cost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "post_trade_nav": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "post_trade_weights": {
+          "$ref": "#/$defs/weights"
+        }
+      }
+    }
+  }
+}

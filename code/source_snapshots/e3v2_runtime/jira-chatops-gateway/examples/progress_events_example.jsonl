@@ -1,0 +1,3 @@
+{"schema_version":"1.0","run_id":"run_SCRUM-46_20260618_001","ticket_id":"SCRUM-46","stage":"fetch","status":"RUNNING","timestamp":"2026-06-18T10:31:10Z","iteration":1,"agent":"repo_agent","tool_call":"fetch_repository","message":"Fetching repository"}
+{"schema_version":"1.0","run_id":"run_SCRUM-46_20260618_001","ticket_id":"SCRUM-46","stage":"fetch","status":"SUCCESS","timestamp":"2026-06-18T10:31:40Z","iteration":1,"agent":"repo_agent","tool_call":"fetch_repository","message":"Repository fetched"}
+{"schema_version":"1.0","run_id":"run_SCRUM-46_20260618_001","ticket_id":"SCRUM-46","stage":"backtest","status":"RUNNING","timestamp":"2026-06-18T10:40:00Z","iteration":2,"agent":"backtest_agent","tool_call":"run_backtest","message":"Backtest running"}

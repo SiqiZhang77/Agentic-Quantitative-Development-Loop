@@ -1,0 +1,7 @@
+Read experiments/exp2/formal-v2/task_inputs/financial_returns_v1.csv and create experiments/exp2/formal-v2/submissions/cumulative_returns.json.
+For every date, calculate the geometric cumulative return from an initial wealth of 1 for Asset A, Asset B, and an equal-weight daily-rebalanced portfolio whose daily return is the arithmetic mean of the two asset returns for that date.
+Preserve input date order and use the formula that compounds one plus each successive return before subtracting one.
+The JSON object must contain "method": "geometric_compounding" plus a rows array. Each row must contain date, asset_a_cumulative_return, asset_b_cumulative_return, and equal_weight_cumulative_return as JSON numbers.
+Keep enough numerical precision for an absolute verification tolerance of 1e-10.
+Do not run a backtest, optimize a strategy, change the input CSV, or modify runtime, deployment, RAG, HDFS, YARN, or strategy-request code.
+The only changed path must be experiments/exp2/formal-v2/submissions/cumulative_returns.json.

@@ -1,0 +1,16 @@
+{
+  "status": "succeeded",
+  "issue_key": "SCRUM-2",
+  "command": "backtest",
+  "summary": "Backtest completed successfully for the momentum strategy.",
+  "metrics": {
+    "sharpe_ratio": 1.42,
+    "max_drawdown": "-8.7%",
+    "total_return": "18.4%"
+  },
+  "artifacts": {
+    "feature_branch": "quant/SCRUM-2",
+    "changed_file": "strategies/momentum.py"
+  },
+  "raw_output": {}
+}

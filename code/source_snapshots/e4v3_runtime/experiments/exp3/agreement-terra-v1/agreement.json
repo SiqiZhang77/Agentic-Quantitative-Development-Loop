@@ -1,0 +1,509 @@
+{
+  "approval_authority": "user",
+  "execution_order": [
+    "E3-T1-R2-M1",
+    "E3-T1-R2-M0",
+    "E3-T2-R2-M0",
+    "E3-T2-R2-M1",
+    "E3-T2-R1-M1",
+    "E3-T2-R1-M0",
+    "E3-T3-R1-M0",
+    "E3-T3-R1-M1",
+    "E3-T1-R1-M0",
+    "E3-T1-R1-M1",
+    "E3-T2-R3-M1",
+    "E3-T2-R3-M0",
+    "E3-T3-R3-M0",
+    "E3-T3-R3-M1",
+    "E3-T1-R3-M0",
+    "E3-T1-R3-M1",
+    "E3-T3-R2-M1",
+    "E3-T3-R2-M0"
+  ],
+  "experiment_id": "E3-manager-star-v1",
+  "formal_run_count": 18,
+  "image_digest": "sha256:5c2088b77b9f7655e6cf57019c7921a99552ff483736fc81863f47b38dc065ca",
+  "implementation_commit": "76b97a09a9a451e7fd455f0ef5c000875c0746b6",
+  "known_negative_ref_counts": {
+    "e2_output_refs": 46,
+    "v5_refs": 1
+  },
+  "provider": {
+    "base_url": "https://api.openai.com/v1",
+    "identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+    "mode": "openai",
+    "model_alias": "gpt-5.6-terra",
+    "reasoning_effort": "none"
+  },
+  "public_inputs_sha256": {
+    "T1": {},
+    "T2": {},
+    "T3": {
+      "task_inputs/financial_returns_v1.csv": "1b0830f2077cb2a70cd094c6e879702d8dcea0fa4e07152b533e8c9cb005df61"
+    }
+  },
+  "rag_enabled": false,
+  "remote_ref_inventory_sha256": "88b2fcbe487579883750a8c7d0d46d1186448d9d9d147ef9625d21b4940d16fb",
+  "repository": "bankingscience/BSLAgenticQuantDevLoop",
+  "requirements_sha256": "e503ec722a99f0d7b92fdbb14813751722248f3ed8b245e3a76f87ececc59d8b",
+  "role_budgets": {
+    "architect": {
+      "max_calls": 3,
+      "max_tokens": 35000
+    },
+    "developer": {
+      "max_calls": 9,
+      "max_tokens": 120000
+    },
+    "manager": {
+      "max_calls": 3,
+      "max_tokens": 45000
+    },
+    "unused_capacity_transferable": false
+  },
+  "rubric_sha256": "d55e2203461c2d044f62c00d7677bc0d9b1a5f2c3d7a660742a94adba4541c79",
+  "runs": [
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "730fe84e032ea9c0d6c65c0a6bd42989c5544efb98cd0965b9f71e8d85f0264c",
+      "file_sha256": {
+        "identity": "44a6c5d563c3d493c081e9693893d5bd7efd5fb933b9e904c42ba46e93cba1d8",
+        "manifest": "5d6f66fa33b001b5bbb3aa3465adb5b59f89a80279084b8a9001cabdddfadafd",
+        "request": "e69617d99249260ccb11b9d3a1fa813844ece67ce16cebf5b9080a0b8d6cf1a3"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R2-M1/identity.json",
+        "manifest": "runs/E3-T1-R2-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R2-M1/request.json"
+      },
+      "identity_sha256": "650545b584cf8ebf09b59d83e4c5abd041116358aa377dfbe67d547b2803df57",
+      "manifest_sha256": "068f9fa0b645a9b51c5e258091ffb4e3629974b2948c85c23a5e397336835116",
+      "paired_target_ref": "quant/E3-T1-R2-M0",
+      "replicate": 2,
+      "run_id": "E3-T1-R2-M1",
+      "sequence": 1,
+      "target_ref": "quant/E3-T1-R2-M1",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "e985e55740f0215ecf4fb272d64a29fb4e866de25ed55712cf92c23003fedb3f",
+      "file_sha256": {
+        "identity": "e334dcdc62a878bd07c35dbb363e76e416488f2b83fa514122d4363113a4ce94",
+        "manifest": "5a98d08e08329726d10db928c84969ed87eff8fef7d3bc52576e870ed2d7c3d8",
+        "request": "c99a8731cbdb5fe46b3a7e5069e42bd3d858fa588a4389d452661e45a7132bf4"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R2-M0/identity.json",
+        "manifest": "runs/E3-T1-R2-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R2-M0/request.json"
+      },
+      "identity_sha256": "e6a50a918455cbed7c2ef7a76911cc801ad75ebcbb0f78e26529be7bd409cc22",
+      "manifest_sha256": "ee55938fdcfe4c12b0ef28ba803273f06670555dcdb6bd74b404fe39906a23fb",
+      "paired_target_ref": "quant/E3-T1-R2-M1",
+      "replicate": 2,
+      "run_id": "E3-T1-R2-M0",
+      "sequence": 2,
+      "target_ref": "quant/E3-T1-R2-M0",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "2c3446a4532473dd9074d76a5b17d3fb75ec1c500a024a844d4112883bd6cf76",
+      "file_sha256": {
+        "identity": "05eca9807c1c77a89386aa66483d66e355cfc643a8792547dff94f0f69b65bcb",
+        "manifest": "72d2f5b79671ea7ad2e927c14ed08c38d3444eaedb8a8215a8db98172ff2efa0",
+        "request": "bec8e8f3f3d50a2265d02f400455da175365cafdc008090d4dc8901530d246db"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R2-M0/identity.json",
+        "manifest": "runs/E3-T2-R2-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R2-M0/request.json"
+      },
+      "identity_sha256": "e5faeeccce5612cfd2a7cef101fb04831f1df723e0ae72cba84f041105ad5eec",
+      "manifest_sha256": "ccadb748ab65ec26727c9bb9a0dd7fcde4af3eae87ce8cd27bd0cee6b11a4eab",
+      "paired_target_ref": "quant/E3-T2-R2-M1",
+      "replicate": 2,
+      "run_id": "E3-T2-R2-M0",
+      "sequence": 3,
+      "target_ref": "quant/E3-T2-R2-M0",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "1458baf58804ecff04bb1fc7da3bf5e790aa38bc5f78af8afe91950f59dac453",
+      "file_sha256": {
+        "identity": "9f6ee69ae99774ecab72f27a5c7936dfcd31ac8eb58c6a12243e6efaf2d1b1d0",
+        "manifest": "b03b7fe76d4bc5ad4b5c1524743e6464dca2d0f081fe92b623d692cf1d69b937",
+        "request": "b14f4ea18f31584551d2ac934c2d36a2cebe6fdb23f9e24cb2dd926a0b4302da"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R2-M1/identity.json",
+        "manifest": "runs/E3-T2-R2-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R2-M1/request.json"
+      },
+      "identity_sha256": "0714dd726a7079a128f0b5d64ceba61813287b7ab1fbf904748f2181b9b7a1e8",
+      "manifest_sha256": "939770a2ce9d461c01e9e0ab11e34b1b5a462f78f713e994e42538516fe5386b",
+      "paired_target_ref": "quant/E3-T2-R2-M0",
+      "replicate": 2,
+      "run_id": "E3-T2-R2-M1",
+      "sequence": 4,
+      "target_ref": "quant/E3-T2-R2-M1",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "2bd8bee321f13aea50f1db09c80bd8481685089b76f6ffd41d0d3c746eeea53b",
+      "file_sha256": {
+        "identity": "fb20c75ef15963f0b42fd99db81f0e15748974f299ab9f57832290bc737540b0",
+        "manifest": "36590aa3070fd2b3447ded555a5f53ceaf132fbdf805f97cd9176f27c17516bc",
+        "request": "7ec03249fb45be7aee3c0486dd4d0fd3fd8f7c90f3d14cf1b3c19aef56d2d393"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R1-M1/identity.json",
+        "manifest": "runs/E3-T2-R1-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R1-M1/request.json"
+      },
+      "identity_sha256": "9b230b152fa39ee7d271a4d8aa96a9efa322e9e86e513e02c85270ee21aff47d",
+      "manifest_sha256": "a77a06eb908c2dde01657d7597472c31bda9cc10661e4cb32ab78920f983ef19",
+      "paired_target_ref": "quant/E3-T2-R1-M0",
+      "replicate": 1,
+      "run_id": "E3-T2-R1-M1",
+      "sequence": 5,
+      "target_ref": "quant/E3-T2-R1-M1",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "fe7de3b689e0b319682be53bf566666054a4fa3b48278fded2d98b0d01d156e6",
+      "file_sha256": {
+        "identity": "a3965e3cb8aa0f7ab5bafab24a450b9e4a28ab0f5a7984d562fd61286e3fb694",
+        "manifest": "b2975f7bfa56c389c4ce4a2916c583c866ba34183773e0d8d1d89b5eb80eb26d",
+        "request": "ce906caa187ef3411616088d8fba289e8f74a53b13d788f83a18d99a1225d62a"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R1-M0/identity.json",
+        "manifest": "runs/E3-T2-R1-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R1-M0/request.json"
+      },
+      "identity_sha256": "3e51347d7c67e47324b2525dcbafd5c63f1a27895fa33ee19e54039251979f35",
+      "manifest_sha256": "1be01be1f0bba3ac9599075af25ea54d31671f5e28b5441fa4e4ba22a77916a2",
+      "paired_target_ref": "quant/E3-T2-R1-M1",
+      "replicate": 1,
+      "run_id": "E3-T2-R1-M0",
+      "sequence": 6,
+      "target_ref": "quant/E3-T2-R1-M0",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "47d17564983dccf90396086cdf543915fcdeadb3dbd83b0bc01b878a83d8a6d4",
+      "file_sha256": {
+        "identity": "9a869212b5216f4af27057969d55f597e9eac57bcb15606cfc044d9b5eeede07",
+        "manifest": "0e73d04f1cf000d8fe855616980b98637bc62650b51ecbe1f26458adb68db432",
+        "request": "cbea9c9a3360f81b14fea2f5610dbb989b787ee7cac17112f5b829e8c8e7d023"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R1-M0/identity.json",
+        "manifest": "runs/E3-T3-R1-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R1-M0/request.json"
+      },
+      "identity_sha256": "8f56c749ee3a35fe0aea1de104e42858f97a6d4172da9768002809f4e1d18a57",
+      "manifest_sha256": "52f012298708ba57de6a5ca3d734f318fd1699d966ae968a11b239be5a7977aa",
+      "paired_target_ref": "quant/E3-T3-R1-M1",
+      "replicate": 1,
+      "run_id": "E3-T3-R1-M0",
+      "sequence": 7,
+      "target_ref": "quant/E3-T3-R1-M0",
+      "task_id": "T3"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "f920c4386fb2982c9483f5834b2e6bb6d144ab8bf454243ec8c380d81de685fb",
+      "file_sha256": {
+        "identity": "fb07d4d1b4bae3921e7d7cda258641346208ef2b5df07b812efa823b28c7dd83",
+        "manifest": "5dcaa8c8cbdaa7e35a2d39e4d0a2c6cbd879c72d218e7d1af303d723ba0ba81b",
+        "request": "1aed99bd72554320d6aa680b2caee58dd939a3c99d5c424a363938b3e1faca9c"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R1-M1/identity.json",
+        "manifest": "runs/E3-T3-R1-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R1-M1/request.json"
+      },
+      "identity_sha256": "1dd3cc4b371c184dcbae6535a3bdbbb84514c5cd5141e9f21e082e962ee2cde1",
+      "manifest_sha256": "54daf845b8b702ce768449e8e804d10f3a1c2d26ff0ce6df69083dfe18e9e409",
+      "paired_target_ref": "quant/E3-T3-R1-M0",
+      "replicate": 1,
+      "run_id": "E3-T3-R1-M1",
+      "sequence": 8,
+      "target_ref": "quant/E3-T3-R1-M1",
+      "task_id": "T3"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "09175230b7331e68a3fa759a229dc8194602c6cf6824036d761d97c5a33bc35d",
+      "file_sha256": {
+        "identity": "c3e3a4d50c2c2b1d07b23c6a1ac7f7c5b40096c77f4a48a0fb04f9f0e6c8c421",
+        "manifest": "ea64b2c95e600e21ed52c013701cd03bdb7e717d24261ce81f1c7518ed0aa091",
+        "request": "8daff4078b33ffd45e7e73266a7e77797988bdcdc98c40ea704b3a7b7863a921"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R1-M0/identity.json",
+        "manifest": "runs/E3-T1-R1-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R1-M0/request.json"
+      },
+      "identity_sha256": "8aa2c9999cd9b208f3765d54726a7b769edec6ae6076bf86df05866b330d247c",
+      "manifest_sha256": "07a0406ab1dd3efd31a224e74c65321622862cf7f98f2cd955855b867414db8b",
+      "paired_target_ref": "quant/E3-T1-R1-M1",
+      "replicate": 1,
+      "run_id": "E3-T1-R1-M0",
+      "sequence": 9,
+      "target_ref": "quant/E3-T1-R1-M0",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "1221850103398f0b4c7fd86d44e205e74ceadcbe8b1195e45a58b5809f1e70d7",
+      "file_sha256": {
+        "identity": "ce1d43465dfe60b0bc7409b8af3a47e894afd4bdc3157f2109ba10add1a6d92c",
+        "manifest": "7f1e819d89a17f7b1902033df913a200a5125d0224a209f9d4ad52513ec66ad6",
+        "request": "97148cc072192623e9aed0edf89c2b2cdb814f2c4c5eb4f9e0ab45f854a083af"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R1-M1/identity.json",
+        "manifest": "runs/E3-T1-R1-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R1-M1/request.json"
+      },
+      "identity_sha256": "4730acc65edaee295159c81d5286acadf8190ccba95dea03ee5d97b246a58f9f",
+      "manifest_sha256": "0c996bace0fbf357a4922867d99e99d1bcbcb345f130343484f12127c4848b73",
+      "paired_target_ref": "quant/E3-T1-R1-M0",
+      "replicate": 1,
+      "run_id": "E3-T1-R1-M1",
+      "sequence": 10,
+      "target_ref": "quant/E3-T1-R1-M1",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "2a3c2ba76e403d59f89285ae5989a3e89b025d570c3ffdac492dbdd8216455fb",
+      "file_sha256": {
+        "identity": "f39042944c170add1cdde8e1a14bc2b9f77cad0035f588f7651d7897fd41ee11",
+        "manifest": "1d127227fc84df7f46e61ec4574c233d68224d2f35ffe0f438f7abcf7c801517",
+        "request": "952cfa8e289f26a5d33f75a47ab9e3ca47825c3e88cc6bbc522b0b263747c0c9"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R3-M1/identity.json",
+        "manifest": "runs/E3-T2-R3-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R3-M1/request.json"
+      },
+      "identity_sha256": "a6e789b100fbce9e34ed8c50eae689a96475030634e6714178ff7062c73dcdcf",
+      "manifest_sha256": "7736782129a4ca0e74fdc23c8f4c524079d6f086a739fd14bd7c9f0e6f030bb0",
+      "paired_target_ref": "quant/E3-T2-R3-M0",
+      "replicate": 3,
+      "run_id": "E3-T2-R3-M1",
+      "sequence": 11,
+      "target_ref": "quant/E3-T2-R3-M1",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "92b7ba89bf6f15c990eaaf64650b23503bdf1bdf396af5dbde13fa6809629ee3",
+      "file_sha256": {
+        "identity": "b0cca6f8fb893793bf4c1de126809af5a85e79ec71b0bb26605c6d240a7a4239",
+        "manifest": "6285ffab38a07837f05ab3476d460b7192ee57598c4d76f3f6f3ba8fff224097",
+        "request": "08aa471edcf4c21545c3c8ed42de72e292f42a52c65c72082d8f4777bbd22511"
+      },
+      "files": {
+        "identity": "runs/E3-T2-R3-M0/identity.json",
+        "manifest": "runs/E3-T2-R3-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T2-R3-M0/request.json"
+      },
+      "identity_sha256": "75ea7f09b815be0ea4202ec997793c858d29df27509d280163fc517d8db2c327",
+      "manifest_sha256": "65d8c877ae632b57996af0c5186c82c24b053f84ce8d917e8733c86ec7fd1745",
+      "paired_target_ref": "quant/E3-T2-R3-M1",
+      "replicate": 3,
+      "run_id": "E3-T2-R3-M0",
+      "sequence": 12,
+      "target_ref": "quant/E3-T2-R3-M0",
+      "task_id": "T2"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "34e4305acecef3385aed4be4c2f9d4ed3dcf834cadf5997f73e9513229102404",
+      "file_sha256": {
+        "identity": "f486a983097bdf3724ceb74f8ced63ebd4d9fd1a1e924c8e9d495a35a40f32bc",
+        "manifest": "df28c80df96800b2e3704889cbae8e72183e9b96dc5cf24e429f8ebd7df6e95c",
+        "request": "4c3f0c870b6871ce7efe5e6f7995a2cbdb16e266cf889863a069686240402154"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R3-M0/identity.json",
+        "manifest": "runs/E3-T3-R3-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R3-M0/request.json"
+      },
+      "identity_sha256": "7e6abcfab302cec96c9b2cf3c0a2331387a6c6e56625318045e2a547428815b7",
+      "manifest_sha256": "ceca28a223618ca3901a14d3311bcd8cfaf6483c3275f4c5292eb3094f7c2a53",
+      "paired_target_ref": "quant/E3-T3-R3-M1",
+      "replicate": 3,
+      "run_id": "E3-T3-R3-M0",
+      "sequence": 13,
+      "target_ref": "quant/E3-T3-R3-M0",
+      "task_id": "T3"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "98af10969a184bb506fdd86162dc4d9c9fe0db94e72d53066af2e57ef605f603",
+      "file_sha256": {
+        "identity": "1545d205cb999bda7c06a844bfaade018bdafa227f69c56b1edec6780b6c6286",
+        "manifest": "81197a692fba9ad321920135d8a3f3d37b96e1c2533b43dc25579fac92661ca4",
+        "request": "07e35ee0bfdb80818fd54cae71eba77071c0db398de095b54accb6bef61a09a5"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R3-M1/identity.json",
+        "manifest": "runs/E3-T3-R3-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R3-M1/request.json"
+      },
+      "identity_sha256": "6d636960f56131b57456c04cc2c4105094a2310bc1dc455e029ab3157e6352f9",
+      "manifest_sha256": "2339e6abf0bc9b2053869687eea39bfdce86314cfb2e8a2e0b2d1b579ea84de8",
+      "paired_target_ref": "quant/E3-T3-R3-M0",
+      "replicate": 3,
+      "run_id": "E3-T3-R3-M1",
+      "sequence": 14,
+      "target_ref": "quant/E3-T3-R3-M1",
+      "task_id": "T3"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "fd92aec28d265cf140bebb4e8b4e83c705fb1424ed0f8ff6a63380334f99ab52",
+      "file_sha256": {
+        "identity": "db6b76cb628ee7baedfb49f1ea35d1b2b744343a600ee90292634e43f8b1f229",
+        "manifest": "470e52f878e12a3574280c3f088c9f7e85eef6af0afde79432e8b69a73a654f9",
+        "request": "9b2d6eb4c2053c975f7b881087f873408e3fb782a6c7da6299df227d660617b3"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R3-M0/identity.json",
+        "manifest": "runs/E3-T1-R3-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R3-M0/request.json"
+      },
+      "identity_sha256": "90fd137c1ef2c94487710c063f58fbb09ceaf4199736834840752b0d68ce9bd2",
+      "manifest_sha256": "c7263cd53f27e8e33613237c25431a6f5651ff6b933a57bd29dc86ba3b319d84",
+      "paired_target_ref": "quant/E3-T1-R3-M1",
+      "replicate": 3,
+      "run_id": "E3-T1-R3-M0",
+      "sequence": 15,
+      "target_ref": "quant/E3-T1-R3-M0",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "1df45a790beb731cd8e72795c52cacf492d5568f23d978686cd0ab55b758772c",
+      "file_sha256": {
+        "identity": "35c985978edbebdebdcc85996b58b165371b315a7a77b2c8f31d610e97dd3c22",
+        "manifest": "65e3a5968e75dfa2d5f5c8ed7a398d3d69bc90cc91a0089c6f531a0c1d5032ab",
+        "request": "5bcbb88e2826b9fa04904c9ee5e5218e2ea8484eb2e9e2be3972fb29a9b8081c"
+      },
+      "files": {
+        "identity": "runs/E3-T1-R3-M1/identity.json",
+        "manifest": "runs/E3-T1-R3-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T1-R3-M1/request.json"
+      },
+      "identity_sha256": "f3e2461332c08996d391722ac65d2d1dfea8b801a331b98d162dd105c86a0bf0",
+      "manifest_sha256": "a4139ff8ab4ad2774bca5deb37e64cba5237c2ef9673728a8c233b6ed6fe36a4",
+      "paired_target_ref": "quant/E3-T1-R3-M0",
+      "replicate": 3,
+      "run_id": "E3-T1-R3-M1",
+      "sequence": 16,
+      "target_ref": "quant/E3-T1-R3-M1",
+      "task_id": "T1"
+    },
+    {
+      "architecture_mode": "manager_star",
+      "arm": "M1",
+      "deny_ref_set_sha256": "34965b1d63b4351841f9f7f74e2e9b77c3d31ee21681ff66eeb862d0a9d0c331",
+      "file_sha256": {
+        "identity": "a4f51b4b3ed077a2b99a392dfef33ea337f7f220a9b1ba79e67b90c5e1c30555",
+        "manifest": "29a5fb20ca2d0dc02526baca3769cc679f832d8044225ae78f798b1246cb8d41",
+        "request": "550be7fffe3745902d6577b315dc4665f401d3676727a3b70c8592e0741ab74f"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R2-M1/identity.json",
+        "manifest": "runs/E3-T3-R2-M1/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R2-M1/request.json"
+      },
+      "identity_sha256": "d123f40e7ed279fa6696d5f7081c99c4e0e6fec76ec11e4aa461c8b59a95d322",
+      "manifest_sha256": "3fc10d8df88b572ff194fa6262e6f59182945c315c29881d5423eb1585f15bd9",
+      "paired_target_ref": "quant/E3-T3-R2-M0",
+      "replicate": 2,
+      "run_id": "E3-T3-R2-M1",
+      "sequence": 17,
+      "target_ref": "quant/E3-T3-R2-M1",
+      "task_id": "T3"
+    },
+    {
+      "architecture_mode": "single_agent",
+      "arm": "M0",
+      "deny_ref_set_sha256": "feff97202b0129631e4d392bd3b5cd43f3f296fec8394d8a90abf21983068ea2",
+      "file_sha256": {
+        "identity": "1a5df982dc688b4316f549e4340f30a9e82abee29bf884c8a228b2db83dc0803",
+        "manifest": "1197692ba2c852569c7aafda0489ffb674549f30423d5c6c0ea4c408a639c90d",
+        "request": "9aa367d758e52b89830699b7a5417ebab951bb0b075519366491abebe0928945"
+      },
+      "files": {
+        "identity": "runs/E3-T3-R2-M0/identity.json",
+        "manifest": "runs/E3-T3-R2-M0/negative_ref_manifest.json",
+        "request": "runs/E3-T3-R2-M0/request.json"
+      },
+      "identity_sha256": "c71ad4d7814475abac1cfb8da2944cc104e2ad32820508a7dd2bbd763cb44ead",
+      "manifest_sha256": "0ba4ebc26099ecffabc3a0f5536cece3bc5b10515e9c16fb698c7c9ceb67db4c",
+      "paired_target_ref": "quant/E3-T3-R2-M1",
+      "replicate": 2,
+      "run_id": "E3-T3-R2-M0",
+      "sequence": 18,
+      "target_ref": "quant/E3-T3-R2-M0",
+      "task_id": "T3"
+    }
+  ],
+  "sandbox_profile": {
+    "cap_drop": "ALL",
+    "cpu_vcpus": 2,
+    "execution_timeout_seconds": 2100,
+    "image_digest": "sha256:5c2088b77b9f7655e6cf57019c7921a99552ff483736fc81863f47b38dc065ca",
+    "memory_mb": 4096,
+    "no_new_privileges": true,
+    "pids_limit": 256,
+    "read_only_root": true,
+    "timeout_seconds": 1800
+  },
+  "sandbox_profile_sha256": "d7278ce1f14dd92edbd7206fdc738dd094103a4bfc42c8a60f3382d1a54bd758",
+  "schema_version": "exp3-terra-agreement-v1",
+  "shared_budget": {
+    "max_calls": 15,
+    "max_tokens": 200000
+  },
+  "source_commit": "76b97a09a9a451e7fd455f0ef5c000875c0746b6",
+  "source_ref": "exp3/terra-source-v1",
+  "status": "user_agreed_preflight_ready",
+  "task_policy": "retain_public_T1_T2_T3_and_current_rubric_metrics",
+  "task_registry_sha256": "dd53e120797b3cf253b4ea117f5192e0037dc78e2b894c23a010556eb40e2a4e",
+  "task_text_sha256": {
+    "T1": "bfa2181b565dc530e694b594b1af005d6669e4209fa959fbeb21a84904550fbd",
+    "T2": "4343d75181bc70b2198f3a93ed05c91ccb7d3d54f9485b34104e60d0d99f6c6e",
+    "T3": "65e516426f991493ed4efe9be60eae6ccc5acf786533f74c71df3aa53a683919"
+  },
+  "tool_implementation_sha256": "2868fe8b4bcb5034feff43d5054ec0fc64ee12ba47c79359e9547e4bc03aba27"
+}

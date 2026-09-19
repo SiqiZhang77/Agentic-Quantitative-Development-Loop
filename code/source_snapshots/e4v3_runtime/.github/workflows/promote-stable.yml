@@ -1,0 +1,41 @@
+name: Promote to Stable
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: "Image tag to promote to :stable (e.g. sha-abc1234... or latest)"
+        required: true
+        default: latest
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/sandbox
+
+jobs:
+  promote:
+    name: Retag image as :stable
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve lowercase image ref
+        run: echo "IMAGE_REF=$(echo '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Retag as :stable
+        run: |
+          docker pull ${{ env.IMAGE_REF }}:${{ inputs.source_tag }}
+          docker tag  ${{ env.IMAGE_REF }}:${{ inputs.source_tag }} ${{ env.IMAGE_REF }}:stable
+          docker push ${{ env.IMAGE_REF }}:stable
+
+      - name: Print promoted digest
+        run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.IMAGE_REF }}:stable

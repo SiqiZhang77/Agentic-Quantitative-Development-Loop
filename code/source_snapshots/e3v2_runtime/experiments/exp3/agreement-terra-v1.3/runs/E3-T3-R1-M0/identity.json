@@ -1,0 +1,39 @@
+{
+  "architecture_mode": "single_agent",
+  "experiment_id": "E3-manager-star-v1",
+  "model_alias": "gpt-5.6-terra",
+  "negative_ref_manifest_sha256": "d4b92e9737ac18fc39aa96d8ff39012e6f2c14f6bf8e35c110e46e2340b56e94",
+  "paired_target_ref": "quant/E3-T3-R1-M1",
+  "protocol_version": "1.0.0-rc2",
+  "provider_base_url": "https://api.openai.com/v1",
+  "provider_identity_sha256": "f5712a84b16c220abf9b470e0a5df839b9cdf3f2be4386989c2e4b18f9086cdc",
+  "provider_mode": "openai",
+  "public_inputs_sha256": {
+    "task_inputs/financial_returns_v1.csv": "1b0830f2077cb2a70cd094c6e879702d8dcea0fa4e07152b533e8c9cb005df61"
+  },
+  "rag_enabled": false,
+  "replicate": 1,
+  "retrieval_context_included": false,
+  "role_budgets": null,
+  "rubric_sha256": "d55e2203461c2d044f62c00d7677bc0d9b1a5f2c3d7a660742a94adba4541c79",
+  "run_key": "E3-T3-R1-M0",
+  "runtime_limits": {
+    "cpu_vcpus": 2,
+    "memory_mb": 4096,
+    "pids_limit": 256,
+    "timeout_seconds": 1800
+  },
+  "sandbox_profile_sha256": "4d831bc38de3389ea1a0bf0f7d1777a0cf5fde7d1274d9d8887442d98f41bb5d",
+  "schema_version": "exp3-run-identity-v2",
+  "shared_budget": {
+    "max_calls": 15,
+    "max_tokens": 200000
+  },
+  "source_commit": "0fc9756bec0e12216c5c1b0120dc734de5e68928",
+  "source_ref": "exp3/terra-source-v3",
+  "status": "draft_local_only",
+  "target_ref": "quant/E3-T3-R1-M0",
+  "task_id": "T3",
+  "task_text_sha256": "65e516426f991493ed4efe9be60eae6ccc5acf786533f74c71df3aa53a683919",
+  "tool_implementation_sha256": "02d6a12734edd6f978e0be66cc5ddacf7ead9cbebd0b3e2492bb2498dc41b202"
+}

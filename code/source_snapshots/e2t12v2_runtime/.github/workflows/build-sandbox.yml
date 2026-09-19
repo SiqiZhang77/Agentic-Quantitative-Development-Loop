@@ -1,0 +1,80 @@
+name: Build & Push Sandbox Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "rae_runtime/sandbox/**"
+      - "rae_runtime/proxy/**"
+      - "rae_runtime/mcp/**"
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/sandbox
+
+jobs:
+  build-and-push:
+    name: Build sandbox image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,format=long
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build for verification
+        run: docker build -f rae_runtime/sandbox/Dockerfile -t rae-verify ./rae_runtime
+
+      - name: Assert hardened invariants
+        run: |
+          set -e
+          # non-root
+          test "$(docker run --rm --entrypoint id rae-verify -u)" = "1000"
+          # no build tools leaked
+          ! docker run --rm --entrypoint sh rae-verify -c 'command -v gcc || command -v pip-compile || command -v uv'
+          # off-network e2e via the real stdin contract -> must exit 0 (SUCCESS)
+          timeout 180s docker run --rm -i --network none -e RAE_OFFLINE=1 rae-verify \
+            < rae_runtime/sandbox/tests/fixtures/runtime_request_example.json
+          # legacy env-var path still works (rollback) -> exit 0. It declares a
+          # backtest, so exercise that route with the built-in offline mock; forcing
+          # the backtest off would turn it into an unreviewable general edit.
+          timeout 180s docker run --rm --network none -e RAE_OFFLINE=1 -e RAE_LEGACY_INPUT=1 \
+            -e RAE_FORCE_BACKTEST=true \
+            -e TICKET=CI-1 -e REQUEST="ci smoke" rae-verify
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: ./rae_runtime
+          file: ./rae_runtime/sandbox/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Print image digest
+        run: 'echo "Published digest: ${{ steps.build.outputs.digest }}"'

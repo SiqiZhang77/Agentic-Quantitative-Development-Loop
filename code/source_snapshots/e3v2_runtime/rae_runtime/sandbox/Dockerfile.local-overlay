@@ -1,0 +1,10 @@
+ARG BASE_IMAGE=exp2-rc2-preflight:20260824
+FROM ${BASE_IMAGE}
+USER root
+WORKDIR /app
+COPY sandbox/ .
+COPY proxy/ ./proxy/
+COPY mcp/ ./mcp/
+COPY after_backtest/ ./after_backtest/
+COPY --chmod=0555 sandbox/entrypoint.sh /entrypoint.sh
+USER sandbox

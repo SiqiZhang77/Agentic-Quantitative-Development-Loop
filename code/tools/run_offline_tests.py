@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Run the validated, dependency-light subset of frozen tests without external services."""
+import os,subprocess,sys,tempfile,shutil
+from pathlib import Path
+from verify_and_extract import ROOT,verify
+
+def main():
+ verify()
+ try:
+  import pytest,jsonschema
+ except ImportError as e:
+  raise SystemExit('Install tools/requirements-offline.txt in a virtual environment before running tests.') from e
+ tests=[
+ 'rae_runtime/proxy/tests/test_quant_calculator.py',
+ 'rae_runtime/proxy/tests/test_quant_calculator_audit.py',
+ 'rae_runtime/proxy/tests/test_exp3_policy.py',
+ 'rae_runtime/proxy/tests/test_exp3_budget.py',
+ 'rae_runtime/proxy/tests/test_exp3_handoff_contracts.py',
+ 'experiments/shared/t3-quant-suite-v2/tests/test_item_submission_contract.py',
+ 'jira-chatops-gateway/tests/test_jira_rag_retriever.py']
+ with tempfile.TemporaryDirectory(prefix='dissertation-offline-tests-') as tmp:
+  shutil.copytree(ROOT/'source_snapshots/e4v3_runtime',Path(tmp)/'e4v3_runtime')
+  env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',PYTEST_DISABLE_PLUGIN_AUTOLOAD='1')
+  subprocess.run([sys.executable,'-m','pytest','-q','-p','no:cacheprovider',*tests],cwd=Path(tmp)/'e4v3_runtime',env=env,check=True)
+if __name__=='__main__':main()
